@@ -23,8 +23,8 @@ python3 Controller.py
 
 After starting the game, you will be greeted with a main menu with the following options:
 
-  1. New Game: Start a new game session.
-  2. Load a Saved Game: Continue playing from a existing position
+  1. **New Game**: Start a new game session.
+  2. **Load a Saved Game**: Continue playing from an existing position
   3. **Quit**: Exit the game.
 
 ### Starting a New Game
