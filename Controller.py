@@ -26,7 +26,8 @@ class GameManager:
                 if self.load_game_state():
                     self.game_loop()
                 else:
-                    GameView.display_message("Loading game failed. Returning to main menu.")
+                    GameView.display_message("Loading game failed.")
+                    self.reload_game_loading_menu()
             elif choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
                 exit()
@@ -55,9 +56,9 @@ class GameManager:
             for player in self.players:
                 GameView.clear_screen()
                 GameView.display_board(self.board)
-                if self.board.check_terminal_state() is not None:
-                    break
-                
+                # Removed the check_terminal_state() here to ensure the final board is displayed before ending the game
+
+                action = None
                 if isinstance(player, HumanPlayer):
                     action = player.choose_action(self.board, GameView.display_message, GameView.input_prompt)
                 elif isinstance(player, ComputerPlayer):
@@ -68,24 +69,40 @@ class GameManager:
                     return
                 elif action is not None:
                     self.board.apply_action(action)
-                    if self.board.check_terminal_state() is not None:
-                        break
-        self.end_game()  # Handle the end of the game (displaying the winner, etc.)
+                    
+                if self.board.check_terminal_state() is not None:
+                    break
+                    
+        self.end_game()  # This will now be called after the loop exits, ensuring the final board state is shown
 
     def end_game(self):
         GameView.clear_screen()
         GameView.display_board(self.board)
-        
         winner = self.board.check_terminal_state()
+        
         if winner == GameBoard.BOARD_PLAYER_X:
             GameView.display_message("Player X wins!")
         elif winner == GameBoard.BOARD_PLAYER_O:
             GameView.display_message("Player O wins!")
         else:
             GameView.display_message("It's a draw!")
-
-    def save_game_state(self):
         
+        self.post_game_options()
+
+    def post_game_options(self):
+        GameView.display_message("\n1. Return to Main Menu\n2. Exit")
+        choice = GameView.input_prompt("Enter your choice: ")
+        if choice == '1':
+            GameView.clear_screen()
+            self.start_menu()
+        elif choice == '2':
+            GameView.display_message("Thank you for playing. Goodbye!")
+            exit()
+        else:
+            GameView.display_message("Invalid choice. Please enter '1' or '2'.")
+            self.post_game_options()  # Recursively prompt for a valid choice
+
+    def save_game_state(self):  
         saved_games_dir = 'savedGames/'
         self.create_directory_if_not_exists(saved_games_dir)
         save_name = GameView.input_prompt('Enter a name for your save file (leave blank for a timestamp): ')
@@ -115,20 +132,25 @@ class GameManager:
         saved_games = [f for f in os.listdir(saved_games_dir) if f.endswith('.json')]
         if not saved_games:
             GameView.display_message("No saved games found.")
-            return False
+            return self.reload_game_loading_menu()  # Call a method to reload the game loading menu
 
         GameView.display_message("Select a game to load:")
         for index, game in enumerate(saved_games, start=1):
             GameView.display_message(f"{index}. {game}")
         
-        selected_game_index = GameView.input_prompt("Enter the number of the game you want to load: ")
+        selected_game_index = GameView.input_prompt("Enter the number of the game you want to load ('exit' to return to main menu): ")
+        if selected_game_index.lower() == 'exit':
+            GameView.clear_screen()
+            self.start_menu()
+            return False  # Return to main menu
         try:
             selected_game_index = int(selected_game_index) - 1
             if selected_game_index < 0 or selected_game_index >= len(saved_games):
                 raise ValueError
         except ValueError:
-            GameView.display_message("Invalid selection.")
-            return False
+            GameView.clear_screen()
+            GameView.display_message("Invalid selection. Please enter a number between 1 and " + str(len(saved_games)) + ".")
+            return self.reload_game_loading_menu()  # Call a method to reload the game loading menu
         
         filename = os.path.join(saved_games_dir, saved_games[selected_game_index])
 
@@ -151,16 +173,15 @@ class GameManager:
     
         GameView.display_message("Game loaded successfully.")
         return True
-        
+    
+    def reload_game_loading_menu(self):
+        # This method reloads the load game menu, allowing for a new choice
+        self.load_game_state()
+
     @staticmethod
-    def create_directory_if_not_exists(self):
-        path = 'savedGames/'
-        directory = path if os.path.isdir(path) else os.path.dirname(path)
+    def create_directory_if_not_exists(directory='savedGames/'):  # Made the path a default argument
         if not os.path.exists(directory):
             os.makedirs(directory, exist_ok=True)
-
-    def end_game(self):
-        exit(0)
 
 if __name__ == '__main__':
     GameView.clear_screen()

@@ -61,6 +61,8 @@ class HumanPlayer(Player):
                 return 'save'
             try:
                 x = int(x) - 1
+                if x < 0 or x > 2:  # Ensure x is within range [0, 2] (corresponds to [1, 3] in user input)
+                    raise ValueError
             except ValueError:
                 display_message("Invalid input. Please enter a number between 1 and 3.")
                 continue
@@ -70,16 +72,20 @@ class HumanPlayer(Player):
                 return 'save'
             try:
                 y = int(y) - 1
+                if y < 0 or y > 2:  # Ensure y is within range [0, 2] (corresponds to [1, 3] in user input)
+                    raise ValueError
             except ValueError:
                 display_message("Invalid input. Please enter a number between 1 and 3.")
                 continue
 
             index = 3 * x + y
-            if board.board[index] != GameBoard.BOARD_EMPTY:
+            if index < 0 or index >= len(board.board):  # Additional safety check, though redundant with above validations
+                display_message("Invalid position. Please try again.")
+            elif board.board[index] != GameBoard.BOARD_EMPTY:
                 display_message('Space already taken. Try again.')
             else:
                 return (self.player_type, index)
-
+            
 class ComputerPlayer(Player):
     def minimax(self, board, depth, is_maximizing):
         terminal_state = board.check_terminal_state()
@@ -91,22 +97,24 @@ class ComputerPlayer(Player):
             for action in board.available_actions():
                 board.apply_action(action)
                 score = self.minimax(board, depth + 1, False)
-                board.board[action[1]] = GameBoard.BOARD_EMPTY
-                best_score = max(score, best_score)
+                board.board[action[1]] = GameBoard.BOARD_EMPTY  # Undo move
+                best_score = max(best_score, score)
             return best_score
         else:
             best_score = float('inf')
             for action in board.available_actions():
                 board.apply_action(action)
                 score = self.minimax(board, depth + 1, True)
-                board.board[action[1]] = GameBoard.BOARD_EMPTY
-                best_score = min(score, best_score)
+                board.board[action[1]] = GameBoard.BOARD_EMPTY  # Undo move
+                best_score = min(best_score, score)
             return best_score
 
     def evaluate_terminal_state(self, state, depth):
         if state == self.player_type:
             return 10 - depth
-        elif state == GameBoard.BOARD_EMPTY:
+        elif state == GameBoard.BOARD_EMPTY:  # This condition seems incorrect for a draw. Adjusting.
+            return 0
+        elif state == 0:
             return 0
         else:
             return depth - 10
@@ -116,8 +124,8 @@ class ComputerPlayer(Player):
         best_action = None
         for action in board.available_actions():
             board.apply_action(action)
-            score = self.minimax(board, 0, False)
-            board.board[action[1]] = GameBoard.BOARD_EMPTY
+            score = self.minimax(board, 0, False)  # Starting depth at 0, assuming computer is maximizing
+            board.board[action[1]] = GameBoard.BOARD_EMPTY  # Undo move
             if score > best_score:
                 best_score = score
                 best_action = action
