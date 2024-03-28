@@ -12,15 +12,6 @@ class GameView:
 """)
 
     @staticmethod
-    def display_board(board):
-        symbols = {board.BOARD_PLAYER_X: 'X', board.BOARD_PLAYER_O: 'O', board.BOARD_EMPTY: ' '}
-        print('\n+---+---+---+')
-        for i in range(0, 9, 3):
-            row = [symbols.get(board.board[i+j], '?') for j in range(3)]
-            print('| ' + ' | '.join(row) + ' |')
-            print('+---+---+---+')
-
-    @staticmethod
     def display_menu():
         print("""
 Welcome to Tic Tac Toe

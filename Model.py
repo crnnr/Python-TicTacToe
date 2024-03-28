@@ -23,15 +23,6 @@ class GameBoard:
         if x_count + o_count == 9:
             return None
         return self.BOARD_PLAYER_O if x_count > o_count else self.BOARD_PLAYER_X
-    
-    def _calculate_current_player(self):
-        # Existing logic to calculate the current player
-        counter = Counter(self.board)
-        x_count = counter[self.BOARD_PLAYER_X]
-        o_count = counter[self.BOARD_PLAYER_O]
-        if x_count + o_count == 9:
-            return None
-        return self.BOARD_PLAYER_O if x_count > o_count else self.BOARD_PLAYER_X
 
     def available_actions(self):
         player = self.current_player()

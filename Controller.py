@@ -6,6 +6,10 @@ from Output import GameView
 
 class GameManager:
 
+    def __init__(self):
+        self.board = GameBoard()  # Ensure board is always initialized
+        self.players = []
+
     def start_screen(self):
         GameView.display_start_screen()
 
@@ -26,7 +30,7 @@ class GameManager:
                     self.load_game_state()
             elif choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
-                exit()
+                exit(0)
             elif choice.lower() == 'secret':  # Check for the "secret" input
                 # Execute the binary rain function
                 try:
@@ -77,10 +81,10 @@ class GameManager:
             self.start_menu()
         elif choice == '2':
             GameView.display_message("Thank you for playing. Goodbye!")
-            exit()
+            exit(0)
         else:
             GameView.display_message("Invalid choice. Please enter '1' or '2'.")
-            self.post_game_options()  # Recursively prompt for a valid choice
+            self.post_game()  # Recursively prompt for a valid choice
 
     def start_new_game(self):
         self.board = GameBoard()
@@ -124,7 +128,7 @@ class GameManager:
       filename = f'savedGames/{save_name}.json'
       self.create_directory_if_not_exists()  # Ensure the directory exists
       game_state = {
-          'board': self.board.board,
+          'board': self.board,
           'num_players': self.num_players,
           'current_turn': self.board.current_player()
       }
