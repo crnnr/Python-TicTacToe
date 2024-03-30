@@ -98,11 +98,11 @@ class GameManager:
             print("Invalid number of players. Defaulting to 1 player mode.")
             self.num_players = 1
 
-        if self.num_players == 1:
+        if num_players == 1:
             self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), ComputerPlayer(self.board.BOARD_PLAYER_O)]
         else:
             self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), HumanPlayer(self.board.BOARD_PLAYER_O)]
-    
+        
     @staticmethod
     def binary_rain(rows=1080, columns=1920, speed=0.01):
         import random
