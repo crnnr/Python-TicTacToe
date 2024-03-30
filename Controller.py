@@ -8,7 +8,6 @@ class GameManager:
 
     def __init__(self):
         self.board = GameBoard()  # Ensure board is always initialized
-        self.players = []
 
     def start_screen(self):
         GameView.display_start_screen()
@@ -96,13 +95,11 @@ class GameManager:
 
         if num_players not in [1, 2]:
             print("Invalid number of players. Defaulting to 1 player mode.")
-            self.num_players = 1
 
-        if num_players == 1:
-            self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), ComputerPlayer(self.board.BOARD_PLAYER_O)]
-        else:
-            self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), HumanPlayer(self.board.BOARD_PLAYER_O)]
-        
+        if self.num_players == 1:
+            self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), ComputerPlayer(GameBoard.BOARD_PLAYER_O)]
+        elif self.num_players == 2:
+            self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), HumanPlayer(GameBoard.BOARD_PLAYER_O)]
     @staticmethod
     def binary_rain(rows=1080, columns=1920, speed=0.01):
         import random
