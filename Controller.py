@@ -125,7 +125,7 @@ class GameManager:
       filename = f'savedGames/{save_name}.json'
       self.create_directory_if_not_exists()  # Ensure the directory exists
       game_state = {
-          'board': self.board,
+          'board': self.board.board,
           'num_players': self.num_players,
           'current_turn': self.board.current_player()
       }
