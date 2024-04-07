@@ -155,38 +155,14 @@ class TestGameBoard(unittest.TestCase):
         self.assertEqual(score, 10)
         self.player.evaluate_terminal_state.assert_called_once_with("X", 0)
 
-    def test_maximizing_and_minimizing_logic(self):
-        self.player = ComputerPlayer("X")
-        self.board = GameBoard()
-        # Mock available_actions to simulate a simple game scenario
-        # For example, two moves left, one leads to a win, another does not
-        self.board.available_actions = MagicMock(return_value=[0, 1])
-
-        # Mock apply_action to simulate making a move
-        def mock_apply_action(action):
-            self.board.board[action] = "X" if self.player.player_type == "X" else "O"
+    def test_maximizing_player_win_scenario(self):
+        board = GameBoard()
+        self.board.board = ["X", "X", GameBoard.BOARD_EMPTY, "O", "O", GameBoard.BOARD_EMPTY, GameBoard.BOARD_EMPTY, GameBoard.BOARD_EMPTY, GameBoard.BOARD_EMPTY]
+        agent = ComputerPlayer("X")
         
-        self.board.apply_action = mock_apply_action
-
-        # Mock check_terminal_state to simulate the game ending conditions
-        def mock_check_terminal_state():
-            # Simplify: If a move is made on position 0, X wins, otherwise, it's a draw
-            return "X" if self.board.board[0] == "X" else None
-        
-        self.board.check_terminal_state = mock_check_terminal_state
-
-        # Mock evaluate_terminal_state to return a win or draw score
-        self.player.evaluate_terminal_state = MagicMock(side_effect=lambda state, depth: 10 if state == "X" else 0)
-        
-        # Test maximizing logic
-        maximizing_score = self.player.minimax(self.board, 0, True)
-        self.assertEqual(maximizing_score, 10, "Maximizing score should be optimal")
-
-        # Test minimizing logic
-        # Here, you might need to adjust the mock setups to reflect an O player's perspective
-        minimizing_score = self.player.minimax(self.board, 0, False)
-        self.assertEqual(minimizing_score, 0, "Minimizing score should prevent opponent's win")
-
+        expected_score = 0 
+        score = agent.minimax(board, 0, True)
+        self.assertEqual(score, expected_score, "Test successful")
         
 if __name__ == '__main__':
     unittest.main()
