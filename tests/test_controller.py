@@ -9,6 +9,7 @@ from Model import ComputerPlayer
 from datetime import datetime
 from Output import GameView
 from unittest.mock import MagicMock
+from Model import GameBoard, ComputerPlayer  # Assumed class names
 
 class TestController(unittest.TestCase):
 
@@ -131,6 +132,7 @@ class TestController(unittest.TestCase):
         mock_apply_action.assert_not_called()
         mock_save_game.assert_called_once()
         mock_post_game.assert_not_called()
+    
     
 if __name__ == '__main__':
     unittest.main()
