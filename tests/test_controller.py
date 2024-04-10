@@ -1,5 +1,7 @@
 import unittest
+import builtins
 import json
+from datetime import datetime
 from unittest.mock import patch, mock_open, MagicMock
 from Controller import GameManager
 from Model import GameBoard
@@ -9,6 +11,7 @@ from Model import ComputerPlayer
 from datetime import datetime
 from Output import GameView
 from unittest.mock import MagicMock
+import re
 from Model import GameBoard, ComputerPlayer  # Assumed class names
 
 class TestController(unittest.TestCase):
@@ -16,7 +19,6 @@ class TestController(unittest.TestCase):
     def setUp(self):
         self.game_manager = GameManager()
         self.game_manager.players = [MagicMock(), MagicMock()]
-
         self.game_manager.board = GameBoard()
 
     def test_start_menu_start_new_game(self):
@@ -132,7 +134,37 @@ class TestController(unittest.TestCase):
         mock_apply_action.assert_not_called()
         mock_save_game.assert_called_once()
         mock_post_game.assert_not_called()
-    
+    @patch('os.listdir', side_effect=FileNotFoundError)
+    def test_directory_not_found(self, mock_listdir):
+        self.game_manager.board = GameManager()
+        with patch('builtins.print') as mock_print:
+            result = self.game_manager.board.load_game_state()
+            mock_print.assert_called_with("No saved games directory found.")
+            self.assertFalse(result)
+    @patch('os.listdir', return_value=[])
+    def test_no_saved_games(self, mock_listdir):
+        self.game_manager.board = GameManager()
+        with patch('builtins.print') as mock_print:
+            result = self.game_manager.board.load_game_state()
+            mock_print.assert_called_with("No saved games found.")
+            self.assertFalse(result)
+    @patch('os.listdir', return_value=['game1.save', 'game2.save'])
+    @patch('Controller.GameView.input_prompt', return_value='exit')
+    def test_exit_selection(self, mock_input, mock_listdir):
+        self.game_manager.board = GameManager()
+        with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu') as mock_start_menu:
+            result = self.game_manager.board.load_game_state()
+            mock_start_menu.assert_called_once()
+            self.assertFalse(result)
+    @patch('os.listdir', return_value=['game1.json', 'game2.json'])
+    @patch('Controller.GameView.input_prompt', return_value='1')
+    def test_valid_selection(self, mock_input, mock_listdir):
+        self.game_manager.board = GameManager()
+        # Assuming load_game_state does something with the file that we can check.
+        # For now, just checking if False is not returned, indicating processing beyond input.
+        with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu'):
+            result = self.game_manager.board.load_game_state()
+            self.assertNotEqual(result, False)
     
 if __name__ == '__main__':
     unittest.main()
