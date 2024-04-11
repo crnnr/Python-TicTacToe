@@ -8,6 +8,7 @@ class GameManager:
 
     def __init__(self):
         self.board = GameBoard()  # Ensure board is always initialized
+        self.num_players = 1 
 
     def start_screen(self):
         GameView.display_start_screen()
@@ -31,7 +32,6 @@ class GameManager:
                 GameView.display_message("Thank you for playing. Goodbye!")
                 exit(0)
             elif choice.lower() == 'secret':  # Check for the "secret" input
-                # Execute the binary rain function
                 try:
                     self.binary_rain()  # You might want to adjust rows, columns, and speed parameters based on your console size and desired effect
                 except KeyboardInterrupt:
@@ -119,7 +119,7 @@ class GameManager:
             time.sleep(speed)  # Control the speed of "rain"
 
     def save_game_state(self):
-      save_name = input("Enter a name for your save (leave blank to use the current datetime): ").strip()
+      save_name = input("Enter a name for your save (leave blank to use the current datetime): ")
       if not save_name:
         save_name = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
       filename = f'savedGames/{save_name}.json'

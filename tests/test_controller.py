@@ -15,7 +15,7 @@ import re
 from Model import GameBoard, ComputerPlayer  # Assumed class names
 
 class TestController(unittest.TestCase):
-
+    
     def setUp(self):
         self.game_manager = GameManager()
         self.game_manager.players = [MagicMock(), MagicMock()]
@@ -165,6 +165,29 @@ class TestController(unittest.TestCase):
         with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu'):
             result = self.game_manager.board.load_game_state()
             self.assertNotEqual(result, False)
+    
+    @patch('builtins.input', side_effect=lambda _: '')
+    @patch('datetime.datetime', autospec=True)
+    @patch('builtins.open', new_callable=mock_open)
+    @patch('Controller.GameManager.start_menu')
+    def test_save_game_with_datetime(self, mock_start_menu, mock_open, mock_datetime, mock_input):
+        # Define a specific datetime
+        specific_datetime = datetime(2023, 5, 17, 3, 14, 1)  # for example
+        
+        # Configure the mock to return this specific datetime when now() is called
+        mock_datetime.now.return_value = specific_datetime
+
+        game_manager = GameManager()
+        game_manager.save_game_state()
+        
+        # Assert that open is called with a filename in the correct format
+        mock_open.assert_called_once()
+        filename_used = mock_open.call_args[0][0]
+        self.assertRegex(filename_used, r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.json')
+        
+        # Ensure start_menu is not called to prevent the infinite loop
+        mock_start_menu.assert_called_once()
+
     
 if __name__ == '__main__':
     unittest.main()
