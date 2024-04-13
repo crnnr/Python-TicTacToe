@@ -3,6 +3,7 @@ import builtins
 import json
 from datetime import datetime
 from unittest.mock import patch, mock_open, MagicMock
+import unittest.mock
 from Controller import GameManager
 from Model import GameBoard
 from Model import Player
@@ -13,6 +14,7 @@ from Output import GameView
 from unittest.mock import MagicMock
 import re
 from Model import GameBoard, ComputerPlayer  # Assumed class names
+
 
 class TestController(unittest.TestCase):
     
@@ -187,7 +189,23 @@ class TestController(unittest.TestCase):
         
         # Ensure start_menu is not called to prevent the infinite loop
         mock_start_menu.assert_called_once()
+    def test_game_loop_apply_action(self):
+        # Set up player action that is not 'save'
+        self.game_manager.players[0].choose_action.side_effect = [(GameBoard.BOARD_PLAYER_X, 1), (GameBoard.BOARD_PLAYER_X, 2)]
 
-    
+        with patch('Controller.GameView.clear_screen') as mock_clear_screen:
+            self.game_manager.players[0].choose_action.side_effect = [(GameBoard.BOARD_PLAYER_X, 1), (GameBoard.BOARD_PLAYER_X, 2)]
+            self.game_manager.game_loop()
+
+            # Ensure the action was applied
+            self.game_manager.board.apply_action.assert_called_once_with(GameBoard.BOARD_PLAYER_X, 1, 2)
+            # Ensure the board was cleared and printed twice (before and after the action)
+            self.assertEqual(mock_clear_screen.call_count, 2)
+            self.assertEqual(self.game_manager.board.print_board.call_count, 2)
+            # Check terminal state was evaluated
+            self.game_manager.board.check_terminal_state.assert_called_once()
+            # Ensure post_game was called due to terminal state or full board
+            self.game_manager.post_game.assert_called_once()
+
 if __name__ == '__main__':
     unittest.main()

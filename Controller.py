@@ -3,6 +3,8 @@ import json
 import os
 from Model import GameBoard, HumanPlayer, ComputerPlayer
 from Output import GameView
+import random
+import time
 
 class GameManager:
 
@@ -46,20 +48,16 @@ class GameManager:
             for player in self.players:
                 GameView.clear_screen()  # Clear screen at the beginning of each turn
                 self.board.print_board()  # Print the board at the start of each turn
-                if self.board.check_terminal_state() is not None:
-                    break
                 action = player.choose_action(self.board)
                 if action == 'save':
                     self.save_game_state()
                     return
-                elif action is not None:
+                else:
                     self.board.apply_action(action)
                     GameView.clear_screen()
                     self.board.print_board()  # Display the board immediately after an action
                     if self.board.check_terminal_state() is not None:
                         break
-                else:  # This else block is for handling unexpected cases, can be removed if not needed
-                    print("An unexpected error occurred. Please try again.")
         self.post_game()
 
     def post_game(self):
@@ -81,17 +79,11 @@ class GameManager:
         elif choice == '2':
             GameView.display_message("Thank you for playing. Goodbye!")
             exit(0)
-        else:
-            GameView.display_message("Invalid choice. Please enter '1' or '2'.")
-            self.post_game()  # Recursively prompt for a valid choice
 
     def start_new_game(self):
         self.board = GameBoard()
         num_players = input('Enter number of players [1-2]: ')
-        try:
-            self.num_players = int(num_players)
-        except ValueError:
-            self.num_players = 1
+        self.num_players = int(num_players)
 
         if num_players not in [1, 2]:
             print("Invalid number of players. Defaulting to 1 player mode.")
@@ -102,8 +94,6 @@ class GameManager:
             self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), HumanPlayer(GameBoard.BOARD_PLAYER_O)]
     @staticmethod
     def binary_rain(rows=1080, columns=1920, speed=0.01):
-        import random
-        import time
         while True:
             # Generate a frame of binary rain
             frame = [[' ' for _ in range(columns)] for _ in range(rows)]
@@ -113,10 +103,6 @@ class GameManager:
                     for row in range(start_row, rows):
                         frame[row][col] = str(random.randint(0, 1))
             # Print the frame
-            os.system('cls' if os.name == 'nt' else 'clear')  # Clear screen command for Windows and Unix
-            for row in frame:
-                print(''.join(row))  # Corrected to print the contents of each row
-            time.sleep(speed)  # Control the speed of "rain"
 
     def save_game_state(self):
       save_name = input("Enter a name for your save (leave blank to use the current datetime): ")
