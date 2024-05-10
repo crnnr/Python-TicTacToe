@@ -164,7 +164,7 @@ class GameManager:
                 self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), ComputerPlayer(GameBoard.BOARD_PLAYER_O)]
         if self.num_players == 2:
             if current_turn == GameBoard.BOARD_PLAYER_X:
-                self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), ComputerPlayer(self.board.BOARD_PLAYER_O)]
+                self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), HumanPlayer(self.board.BOARD_PLAYER_O)]
             else:
                 self.players = [HumanPlayer(self.board.BOARD_PLAYER_O), HumanPlayer(self.board.BOARD_PLAYER_X)]
         
