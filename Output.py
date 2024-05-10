@@ -8,7 +8,7 @@ class GameView:
     | |  | |/ __| |/ _` |/ __| |/ _ \\ / _ \\
     | |  | | (__| | (_| | (__| | (_) |  __/
     |_|  |_|\___|_|\__,_|\___|_|\___/ \___|
-          by @crnnr | github.com/crnnr                                  
+          by Christof & Manuel                                  
 """)
 
     @staticmethod
@@ -32,3 +32,15 @@ Welcome to Tic Tac Toe
     @staticmethod
     def input_prompt(prompt):
         return input(prompt)
+
+    @staticmethod
+    def print_board(board):
+        symbols = {board.BOARD_PLAYER_X: 'X', board.BOARD_PLAYER_O: 'O', board.BOARD_EMPTY: ' '}
+        print('\n+---+---+---+')
+        for i in range(0, 9, 3):
+            row = []
+            for j in range(3):
+                # Fallback for unexpected values
+                row.append(symbols.get(board.board[i+j], '?'))
+            print('| ' + ' | '.join(row) + ' |')
+            print('+---+---+---+')

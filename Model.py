@@ -55,16 +55,16 @@ class GameBoard:
 
         return 0 if self.current_player() is None else None
 
-    def print_board(self):
-        symbols = {self.BOARD_PLAYER_X: 'X', self.BOARD_PLAYER_O: 'O', self.BOARD_EMPTY: ' '}
-        print('\n+---+---+---+')
-        for i in range(0, 9, 3):
-            row = []
-            for j in range(3):
-                # Fallback for unexpected values
-                row.append(symbols.get(self.board[i+j], '?'))
-            print('| ' + ' | '.join(row) + ' |')
-            print('+---+---+---+')
+    # def print_board(self):
+    #     symbols = {self.BOARD_PLAYER_X: 'X', self.BOARD_PLAYER_O: 'O', self.BOARD_EMPTY: ' '}
+    #     print('\n+---+---+---+')
+    #     for i in range(0, 9, 3):
+    #         row = []
+    #         for j in range(3):
+    #             # Fallback for unexpected values
+    #             row.append(symbols.get(self.board[i+j], '?'))
+    #         print('| ' + ' | '.join(row) + ' |')
+    #         print('+---+---+---+')
 
 class Player:
     def __init__(self, player_type):

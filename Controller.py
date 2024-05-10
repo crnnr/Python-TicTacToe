@@ -1,10 +1,12 @@
 from datetime import datetime
+from fileinput import filename
 import json
 import os
 from Model import GameBoard, HumanPlayer, ComputerPlayer
 from Output import GameView
 import random
 import time
+from pathlib import Path
 
 class GameManager:
 
@@ -47,7 +49,8 @@ class GameManager:
         while self.board.check_terminal_state() is None and any(space == GameBoard.BOARD_EMPTY for space in self.board.board):
             for player in self.players:
                 GameView.clear_screen()  # Clear screen at the beginning of each turn
-                self.board.print_board()  # Print the board at the start of each turn
+                #self.board.print_board()  # Print the board at the start of each turn
+                GameView.print_board(self.board) #Print the board at the start of each turn
                 action = player.choose_action(self.board)
                 if action == 'save':
                     self.save_game_state()
@@ -55,7 +58,8 @@ class GameManager:
                 else:
                     self.board.apply_action(action)
                     GameView.clear_screen()
-                    self.board.print_board()  # Display the board immediately after an action
+                    #self.board.print_board()  # Display the board immediately after an action
+                    GameView.print_board(self.board) #Display the board immediately after an action
                     if self.board.check_terminal_state() is not None:
                         break
         self.post_game()
@@ -64,7 +68,8 @@ class GameManager:
         # Check for the winner after the loop ends
         winner = self.board.check_terminal_state()
         GameView.clear_screen()
-        self.board.print_board()
+        #self.board.print_board()
+        GameView.print_board(self.board)
         if winner == GameBoard.BOARD_PLAYER_X:
             print("Player X wins!")
         elif winner == GameBoard.BOARD_PLAYER_O:
@@ -107,8 +112,8 @@ class GameManager:
     def save_game_state(self):
       save_name = input("Enter a name for your save (leave blank to use the current datetime): ")
       if not save_name:
-        save_name = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-      filename = f'savedGames/{save_name}.json'
+        save_name = datetime.now().strftime("%Y-%m-%d %H_%M_%S") + ".json"
+        filename = Path("savedGames", save_name) #Build filepath independent of OS
       self.create_directory_if_not_exists()  # Ensure the directory exists
       game_state = {
           'board': self.board.board,
@@ -159,7 +164,7 @@ class GameManager:
                 self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), ComputerPlayer(GameBoard.BOARD_PLAYER_O)]
         if self.num_players == 2:
             if current_turn == GameBoard.BOARD_PLAYER_X:
-                self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), ComputerPlayer(self.board.BOARD_PLAYER_O)]
+                self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), HumanPlayer(self.board.BOARD_PLAYER_O)]
             else:
                 self.players = [HumanPlayer(self.board.BOARD_PLAYER_O), HumanPlayer(self.board.BOARD_PLAYER_X)]
         
