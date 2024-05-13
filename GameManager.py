@@ -6,13 +6,12 @@ from GameBoard import GameBoard
 from Player import HumanPlayer, ComputerPlayer
 from GameView import GameView
 import random
-import time
 from pathlib import Path
 
 class GameManager:
 
     def __init__(self):
-        self.board = GameBoard()  # Ensure board is always initialized
+        self.board = GameBoard()
         self.num_players = 1 
 
     def start_screen(self):
@@ -36,12 +35,12 @@ class GameManager:
             elif choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
                 exit(0)
-            elif choice.lower() == 'secret':  # Check for the "secret" input
+            elif choice.lower() == 'secret':
                 try:
                     self.binary_rain()  # You might want to adjust rows, columns, and speed parameters based on your console size and desired effect
                 except KeyboardInterrupt:
                 # Handle the interruption gracefully and return to the menu
-                    print("\nExiting binary rain...\n")
+                    GameView.display_message("\nExiting binary rain...\n")
                 # Optionally, clear the screen or reset any game state if necessary
             else:
                 GameView.display_message("Invalid choice. Please enter 1, 2, or 3.")
@@ -51,20 +50,19 @@ class GameManager:
             for player in self.players:
                 GameView.clear_screen()  # Clear screen at the beginning of each turn
                 #self.board.print_board()  # Print the board at the start of each turn
-                GameView.print_board(self.board) #Print the board at the start of each turn
-                #action = player.choose_action(self.board)
-                if GameView.ask_for_saving():
+                GameView.print_board(self.board)
+                if isinstance(player, HumanPlayer):
+                        move = GameView.choose_move(self.board, player)
+                        if move == 'save':
+                            self.save_game_state()
+                            return
+                        row, column = move # Unpack the tuple
+                        action = player.make_move(self.board, row, column)
+                else:
+                        action = player.make_move(self.board) # Pass the board argument to the make_move() method
+                if action == 'save':
                     self.save_game_state()
                     return
-                if player.player_type == GameBoard.BOARD_PLAYER_X:
-                    row, column = GameView.choose_move(self.board, player)
-                    action = player.make_move(self.board, row, column)
-                else:
-                    action = player.make_move(self.board)
-                #if action == 'save':
-                #   self.save_game_state()
-                #    return
-               
                 self.board.apply_action(action)
                 GameView.clear_screen()
                 #self.board.print_board()  # Display the board immediately after an action
@@ -80,11 +78,11 @@ class GameManager:
         #self.board.print_board()
         GameView.print_board(self.board)
         if winner == GameBoard.BOARD_PLAYER_X:
-            print("Player X wins!")
+            GameView.display_message("Player X wins!")
         elif winner == GameBoard.BOARD_PLAYER_O:
-            print("Player O wins!")
+            GameView.display_message("Player O wins!")
         else:
-            print("It's a draw!") 
+            GameView.display_message("It's a draw!") 
         GameView.display_message("\n1. Return to Main Menu\n2. Exit")
         choice = GameView.input_prompt("Enter your choice: ")
         if choice == '1':
@@ -100,12 +98,13 @@ class GameManager:
         self.num_players = int(num_players)
 
         if self.num_players not in [1, 2]:
-            print("Invalid number of players. Defaulting to 1 player mode.")
+            GameView.display_message("Invalid number of players. Defaulting to 1 player mode.")
 
         if self.num_players == 1:
             self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), ComputerPlayer(GameBoard.BOARD_PLAYER_O)]
         elif self.num_players == 2:
             self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), HumanPlayer(GameBoard.BOARD_PLAYER_O)]
+
     @staticmethod
     def binary_rain(rows=1080, columns=1920, speed=0.01):
         while True:
@@ -116,48 +115,54 @@ class GameManager:
                     start_row = random.randint(0, rows - 1)
                     for row in range(start_row, rows):
                         frame[row][col] = str(random.randint(0, 1))
-            # Print the frame
 
     def save_game_state(self):
-      save_name = input("Enter a name for your save (leave blank to use the current datetime): ")
-      if not save_name:
-        save_name = datetime.now().strftime("%Y-%m-%d %H_%M_%S") + ".json"
-        filename = Path("savedGames", save_name) #Build filepath independent of OS
-      self.create_directory_if_not_exists()  # Ensure the directory exists
-      game_state = {
-          'board': self.board.board,
-          'num_players': self.num_players,
-          'current_turn': self.board.current_player()
-      }
-      with open(filename, 'w') as file:
-          json.dump(game_state, file)
-      print(f"Game saved successfully as '{filename}'")
-      GameView.clear_screen()
-      self.start_menu()  # Return to the main menu after saving game
+        save_name = input("Enter a name for your save (leave blank to use the current datetime): ")
+        if not save_name:
+            save_name = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".json"  # Ensure filename is valid
+        else:
+            if not save_name.endswith('.json'):
+                save_name += ".json"
+        
+        filename = Path("savedGames", save_name)  # Build filepath independent of OS
+        self.create_directory_if_not_exists(self)  # Ensure the directory exists
+        game_state = {
+            'board': self.board.board,
+            'num_players': self.num_players,
+            'current_turn': self.board.current_player()
+        }
+        try:
+            with open(filename, 'w') as file:
+                json.dump(game_state, file)
+            GameView.display_message(f"Game saved successfully as '{filename}'")
+        except IOError as e:
+            GameView.display_message(f"Failed to save the game: {str(e)}")
+        GameView.clear_screen()
+        self.start_menu()  # Return to the main menu after saving the game
 
     def load_game_state(self):
         saved_games_dir = 'savedGames'
         try:
             saved_files = os.listdir(saved_games_dir)
             if not saved_files:
-                print("No saved games found.")
+                GameView.display_message("No saved games found.")
                 return False
         except FileNotFoundError:
-            print("No saved games directory found.")
+            GameView.display_message("No saved games directory found.")
             return False
 
-        print("Please select a game to load:")
+        GameView.display_message("Please select a game to load:")
         for i, file in enumerate(saved_files, 1):
-            print(f"{i}. {file}")
+            GameView.display_message(f"{i}. {file}")
         choice = GameView.input_prompt("Enter the number of the game you want to load ('exit' to return to main menu): ")
         if choice.lower() == 'exit':
             GameView.clear_screen()
             self.start_menu()
-            return False  # Return to main menu
+            return False
         try:
             selected_file = saved_files[int(choice) - 1]
         except (ValueError, IndexError):
-            print("Invalid selection.")
+            GameView.display_message("Invalid selection.")
             return False
 
         with open(f'{saved_games_dir}/{selected_file}', 'r') as file:
@@ -173,20 +178,19 @@ class GameManager:
                 self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X), ComputerPlayer(GameBoard.BOARD_PLAYER_O)]
         if self.num_players == 2:
             if current_turn == GameBoard.BOARD_PLAYER_X:
-                self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), ComputerPlayer(self.board.BOARD_PLAYER_O)]
+                self.players = [HumanPlayer(self.board.BOARD_PLAYER_X), HumanPlayer(self.board.BOARD_PLAYER_O)]
             else:
                 self.players = [HumanPlayer(self.board.BOARD_PLAYER_O), HumanPlayer(self.board.BOARD_PLAYER_X)]
         
         if current_turn:
             self.board.set_current_player(current_turn)
 
-        print("Game loaded successfully.")
+        GameView.display_message("Game loaded successfully.")
         return True  # Indicate success
     
     @staticmethod
-    def create_directory_if_not_exists(directory='savedGames/'):  # Made the path a default argument
-        if not os.path.exists(directory):
-            os.makedirs(directory, exist_ok=True)
+    def create_directory_if_not_exists(self):
+        Path("savedGames").mkdir(parents=True, exist_ok=True)
 
 
 
