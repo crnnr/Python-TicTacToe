@@ -32,6 +32,41 @@ Welcome to Tic Tac Toe
     @staticmethod
     def input_prompt(prompt):
         return input(prompt)
+    
+    @staticmethod
+    def ask_for_saving():
+        saving = input("Would you like to save the Game? Type 'save'.")
+        if saving == 'save':
+            return True
+        else:
+            print("Game not saved!")
+            return False
+        
+
+    @staticmethod
+    def choose_move(board, player):
+        #print ("To save the game, type 'save' at any time. \n")
+        print(f"{player.player_type}'s turn.")
+        while True:
+            row = input('Enter row [1-3]: ')
+            #if row.lower() == 'save':
+            #    return 'save'
+            if not row.isdigit() or not 1 <= int(row) <= 3:
+                print("Invalid input. Please enter a number between 1 and 3.")
+                continue
+
+            column = input('Enter column [1-3]: ')
+            #if column.lower() == 'save':
+            #    return 'save'
+            if not column.isdigit() or not 1 <= int(column) <= 3:
+                print("Invalid input. Please enter a number between 1 and 3.")
+                continue
+            if board.board[index] != board.BOARD_EMPTY:
+                print('Space already taken. Try again.')
+            else:
+                break
+        return row, column
+            
 
     @staticmethod
     def print_board(board):
