@@ -1,5 +1,5 @@
-from GameManager import GameManager
-from GameView import GameView
+from controller import GameManager
+from view import GameView
 
 if __name__ == '__main__':
     GameView.clear_screen()

@@ -1,10 +1,10 @@
 from datetime import datetime
-from fileinput import filename
+import fileinput
 import json
 import os
-from GameBoard import GameBoard
-from Player import HumanPlayer, ComputerPlayer
-from GameView import GameView
+from board import GameBoard
+from player import HumanPlayer, ComputerPlayer
+from view import GameView
 import random
 from pathlib import Path
 
@@ -12,13 +12,22 @@ from pathlib import Path
 class GameManager:
 
     def __init__(self):
+        """
+        Initialize the game manager with a new game board and one player.
+        """
         self.board = GameBoard()
         self.num_players = 1
 
     def start_screen(self):
+        """
+        Display the start screen of the game.
+        """
         GameView.display_start_screen()
 
     def start_menu(self):
+        """
+        Display the start menu and handle user input for game options.
+        """
         self.start_screen()
         while True:
             GameView.display_menu()
@@ -46,6 +55,9 @@ class GameManager:
                                          "1, 2, or 3.")
 
     def game_loop(self):
+        """
+        Main game loop, handles player turns and game state updates.
+        """
         while self.board.check_terminal_state() is None \
         and any(space == GameBoard.BOARD_EMPTY for space in self.board.board):
             for player in self.players:
@@ -73,6 +85,9 @@ class GameManager:
         self.post_game()
 
     def post_game(self):
+        """
+        Handle post-game actions, such as displaying the winner and offering replay options.
+        """
         # Check for the winner after the loop ends
         winner = self.board.check_terminal_state()
         GameView.clear_screen()
@@ -93,6 +108,9 @@ class GameManager:
             exit(0)
 
     def start_new_game(self):
+        """
+        Start a new game, asking for the number of players and initializing the game board and players.
+        """
         self.board = GameBoard()
         num_players = input('Enter number of players [1-2]: ')
         self.num_players = int(num_players)
@@ -110,6 +128,9 @@ class GameManager:
 
     @staticmethod
     def binary_rain(rows=1080, columns=1920, speed=0.01):
+        """
+        Display a binary rain animation. Can be interrupted with a keyboard interrupt.
+        """
         while True:
             # Generate a frame of binary rain
             frame = [[' ' for _ in range(columns)] for _ in range(rows)]
@@ -120,6 +141,9 @@ class GameManager:
                         frame[row][col] = str(random.randint(0, 1))
 
     def save_game_state(self):
+        """
+        Save the current game state to a file.
+        """
         save_name = input("Enter a name for your save"
                           "(leave blank to use the current datetime): ")
         if not save_name:
@@ -146,6 +170,9 @@ class GameManager:
         self.start_menu()  # Return to the main menu after saving the game
 
     def load_game_state(self):
+        """
+        Load a game state from a file.
+        """
         saved_games_dir = 'savedGames'
         try:
             saved_files = os.listdir(saved_games_dir)
@@ -199,4 +226,7 @@ class GameManager:
 
     @staticmethod
     def create_directory_if_not_exists(self):
+        """
+        Create the directory for saved games if it does not exist.
+        """
         Path("savedGames").mkdir(parents=True, exist_ok=True)
