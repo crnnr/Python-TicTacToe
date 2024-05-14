@@ -1,7 +1,13 @@
+"""Takes care of the game board and its state."""
+
+"""
+    Import Counter for calculating the current players.
+"""
 from collections import Counter
 
 
 class GameBoard:
+    """Board handeling class."""
     BOARD_EMPTY = 0
     BOARD_PLAYER_X = "X"
     BOARD_PLAYER_O = "O"
@@ -60,7 +66,7 @@ class GameBoard:
         Determine the available actions for the current player.
 
         Returns:
-            A list of tuples, where each tuple contains the current player's symbol and an available space on the board.
+            A list of tuples with player symbols.
         """
         player = self.current_player()
         return [(player, i) for i,
@@ -71,7 +77,8 @@ class GameBoard:
         Apply an action to the game board.
 
         Args:
-            action: A tuple containing the current player's symbol and the index of the space on the board to mark.
+            action: A tuple containing the current player's symbol 
+            and the index of the space on the board to mark.
         """
         player, index = action
         new_board = self.board.copy()
@@ -83,7 +90,8 @@ class GameBoard:
         Check if the game is in a terminal state.
 
         Returns:
-            The symbol of the winning player, if there is one. If the game is a draw, returns 0. If the game is not over, returns None.
+            The symbol of the winning player, if there is one. 
+            If the game is a draw, returns 0. If the game is not over, returns None.
         """
         for i in range(3):
             if self.board[3*i] == self.board[3*i + 1] == \

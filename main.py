@@ -1,3 +1,4 @@
+""" Main file to run the game """
 from controller import GameManager
 from view import GameView
 

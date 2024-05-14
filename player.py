@@ -1,3 +1,4 @@
+""" Handles actions for  HumanPlayer and ComputerPlayer classes """
 from board import GameBoard
 
 
@@ -7,13 +8,16 @@ class Player:
         Check if the game is in a terminal state.
 
         Returns:
-            The symbol of the winning player, if there is one. If the game is a draw, returns 0. If the game is not over, returns None.
+            The symbol of the winning player, if there is one.
+            If the game is a draw, returns 0.
+            If the game is not over, returns None.
         """
         self.player_type = player_type
 
     def make_move(self, board):
         """
-        Make a move on the game board. This method should be overridden by subclasses.
+        Make a move on the game board. 
+        This method should be overridden by subclasses.
 
         Args:
             board: The current state of the game board.
@@ -36,12 +40,13 @@ class HumanPlayer(Player):
         Make a move on the game board at the specified row and column.
 
         Args:
-            board: The current state of the game board.
-            row: The row of the board where the player wants to make a move.
-            column: The column of the board where the player wants to make a move.
+        board: The current state of the game board.
+        row: The row of the board where the player wants to make a move.
+        column: The column of the board where the player wants to make a move
 
         Returns:
-            A tuple containing the player's type and the index of the board where the move was made.
+        A tuple containing the player's type and
+        the index of the board where the move was made.
         """
         x, y = int(row) - 1, int(column) - 1
         index = 3 * x + y
@@ -65,7 +70,8 @@ class ComputerPlayer(Player):
         Args:
             board: The current state of the game board.
             depth: The current depth of the game tree.
-            is_maximizing: A boolean indicating whether the current player is maximizing or minimizing.
+            is_maximizing: boolean indicating if the 
+            current player is maximizing or minimizing.
 
         Returns:
             The best score that can be achieved with the current game state.
@@ -96,8 +102,8 @@ class ComputerPlayer(Player):
         Evaluate the score of a terminal game state.
 
         Args:
-            state: The terminal state of the game.
-            depth: The depth of the game tree when the terminal state was reached.
+        state: The terminal state of the game.
+        depth: The depth of the game tree when the terminal state was reached
 
         Returns:
             The score of the terminal state.

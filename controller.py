@@ -1,5 +1,5 @@
+""" Controller module for gamelogic """
 from datetime import datetime
-import fileinput
 import json
 import os
 from board import GameBoard
@@ -10,6 +10,7 @@ from pathlib import Path
 
 
 class GameManager:
+    """ Brain of the operation"""
 
     def __init__(self):
         """
@@ -86,7 +87,8 @@ class GameManager:
 
     def post_game(self):
         """
-        Handle post-game actions, such as displaying the winner and offering replay options.
+        Handle post-game actions, 
+        such as displaying the winner and offering replay options.
         """
         # Check for the winner after the loop ends
         winner = self.board.check_terminal_state()
@@ -109,7 +111,9 @@ class GameManager:
 
     def start_new_game(self):
         """
-        Start a new game, asking for the number of players and initializing the game board and players.
+        Start a new game, 
+        asking the number of players
+        initializies the game board and players.
         """
         self.board = GameBoard()
         num_players = input('Enter number of players [1-2]: ')

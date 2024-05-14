@@ -1,6 +1,9 @@
+"""Handles the user interface for the game."""
+
 import os
 
 class GameView:
+    """ Handles the produced output"""
     @staticmethod
     def display_start_screen():
         """
@@ -68,7 +71,8 @@ Welcome to Tic Tac Toe
             player: The current player.
 
         Returns:
-            The user's chosen move as a tuple of (row, column), or 'save' if the user chooses to save the game.
+            The user's chosen move as a tuple of (row, column), 
+            or 'save' if the user chooses to save the game.
         """
         print("To save the game, type 'save' at any time. \n")
         print(f"{player.player_type}'s turn.")
@@ -77,14 +81,14 @@ Welcome to Tic Tac Toe
             if row.lower() == 'save':
                 return 'save'
             if not row.isdigit() or not 1 <= int(row) <= 3:
-                print("Invalid input. Please enter a number between 1 and 3.")
+                print("Invalid input. Please enter a number between 1 to 3.")
                 continue
 
             column = input('Enter column [1-3]: ')
             if column.lower() == 'save':
                 return 'save'
             if not column.isdigit() or not 1 <= int(column) <= 3:
-                print("Invalid input. Please enter a number between 1 and 3.")
+                print("Invalid input. Please enter a number between 1 to 3.")
                 continue
             index = (int(row) - 1) * 3 + (int(column) - 1)
             if board.board[index] != board.BOARD_EMPTY:
