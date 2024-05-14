@@ -1,3 +1,5 @@
+
+
 class GameView:
     @staticmethod
     def display_start_screen():
@@ -8,7 +10,7 @@ class GameView:
     | |  | |/ __| |/ _` |/ __| |/ _ \\ / _ \\
     | |  | | (__| | (_| | (__| | (_) |  __/
     |_|  |_|\___|_|\__,_|\___|_|\___/ \___|
-          by Christof & Manuel                                  
+          by Christof & Manuel                            
 """)
 
     @staticmethod
@@ -32,15 +34,15 @@ Welcome to Tic Tac Toe
     @staticmethod
     def input_prompt(prompt):
         return input(prompt)
-        
+
     @staticmethod
     def choose_move(board, player):
-        print ("To save the game, type 'save' at any time. \n")
+        print("To save the game, type 'save' at any time. \n")
         print(f"{player.player_type}'s turn.")
         while True:
             row = input('Enter row [1-3]: ')
             if row.lower() == 'save':
-               return 'save'
+                return 'save'
             if not row.isdigit() or not 1 <= int(row) <= 3:
                 print("Invalid input. Please enter a number between 1 and 3.")
                 continue
@@ -57,10 +59,11 @@ Welcome to Tic Tac Toe
             else:
                 break
         return row, column
-            
+
     @staticmethod
     def print_board(board):
-        symbols = {board.BOARD_PLAYER_X: 'X', board.BOARD_PLAYER_O: 'O', board.BOARD_EMPTY: ' '}
+        symbols = {board.BOARD_PLAYER_X: 'X', board.BOARD_PLAYER_O: 'O',
+                   board.BOARD_EMPTY: ' '}
         print('\n+---+---+---+')
         for i in range(0, 9, 3):
             row = []

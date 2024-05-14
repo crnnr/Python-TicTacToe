@@ -22,8 +22,9 @@ class GameBoard:
         o_count = counter[self.BOARD_PLAYER_O]
         if x_count + o_count == 9:
             return None
-        return self.BOARD_PLAYER_O if x_count > o_count else self.BOARD_PLAYER_X
-    
+        return self.BOARD_PLAYER_O if x_count > o_count \
+            else self.BOARD_PLAYER_X
+
     def _calculate_current_player(self):
         # Existing logic to calculate the current player
         counter = Counter(self.board)
@@ -31,11 +32,13 @@ class GameBoard:
         o_count = counter[self.BOARD_PLAYER_O]
         if x_count + o_count == 9:
             return None
-        return self.BOARD_PLAYER_O if x_count > o_count else self.BOARD_PLAYER_X
+        return self.BOARD_PLAYER_O if x_count > o_count \
+                                   else self.BOARD_PLAYER_X
 
     def available_actions(self):
         player = self.current_player()
-        return [(player, i) for i, space in enumerate(self.board) if space == self.BOARD_EMPTY]
+        return [(player, i) for i,
+                space in enumerate(self.board) if space == self.BOARD_EMPTY]
 
     def apply_action(self, action):
         player, index = action
@@ -45,12 +48,17 @@ class GameBoard:
 
     def check_terminal_state(self):
         for i in range(3):
-            if self.board[3*i] == self.board[3*i + 1] == self.board[3*i + 2] != self.BOARD_EMPTY:
+            if self.board[3*i] == self.board[3*i + 1] == \
+                self.board[3*i + 2] != self.BOARD_EMPTY:
                 return self.board[3*i]
-            if self.board[i] == self.board[i + 3] == self.board[i + 6] != self.BOARD_EMPTY:
+            if self.board[i] == self.board[i + 3] == \
+                self.board[i + 6] != self.BOARD_EMPTY:
                 return self.board[i]
 
-        if self.board[0] == self.board[4] == self.board[8] != self.BOARD_EMPTY or self.board[2] == self.board[4] == self.board[6] != self.BOARD_EMPTY:
+        if self.board[0] == self.board[4] \
+        == self.board[8] != self.BOARD_EMPTY \
+        or self.board[2] == self.board[4] \
+        == self.board[6] != self.BOARD_EMPTY:
             return self.board[4]
 
         return 0 if self.current_player() is None else None
