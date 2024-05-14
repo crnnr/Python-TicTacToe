@@ -1,12 +1,13 @@
 """ Controller module for gamelogic """
 from datetime import datetime
+import random
 import json
 import os
+import sys
+from pathlib import Path
 from board import GameBoard
 from player import HumanPlayer, ComputerPlayer
 from view import GameView
-import random
-from pathlib import Path
 
 
 class GameManager:
@@ -18,6 +19,8 @@ class GameManager:
         """
         self.board = GameBoard()
         self.num_players = 1
+        self.players = [HumanPlayer(GameBoard.BOARD_PLAYER_X),
+                        ComputerPlayer(GameBoard.BOARD_PLAYER_O)]
 
     def start_screen(self):
         """
@@ -37,7 +40,7 @@ class GameManager:
                 self.start_new_game()
                 self.game_loop()
                 break
-            elif choice == '2':
+            if choice == '2':
                 if self.load_game_state():
                     self.game_loop()
                 else:
@@ -45,7 +48,7 @@ class GameManager:
                     self.load_game_state()
             elif choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
-                exit(0)
+                sys.exit(0)
             elif choice.lower() == 'secret':
                 try:
                     self.binary_rain()
@@ -107,7 +110,7 @@ class GameManager:
             self.start_menu()
         elif choice == '2':
             GameView.display_message("Thank you for playing. Goodbye!")
-            exit(0)
+            sys.exit(0)
 
     def start_new_game(self):
         """
@@ -131,7 +134,7 @@ class GameManager:
                             HumanPlayer(GameBoard.BOARD_PLAYER_O)]
 
     @staticmethod
-    def binary_rain(rows=1080, columns=1920, speed=0.01):
+    def binary_rain(rows=1080, columns=1920):
         """
         Display a binary rain animation. Can be interrupted with a keyboard interrupt.
         """
@@ -158,7 +161,7 @@ class GameManager:
                 save_name += ".json"
         # OS independent filepath
         filename = Path("savedGames", save_name)
-        self.create_directory_if_not_exists(self)
+        self.create_directory_if_not_exists()
         game_state = {
             'board': self.board.board,
             'num_players': self.num_players,
@@ -229,7 +232,7 @@ class GameManager:
         return True  # Indicate success
 
     @staticmethod
-    def create_directory_if_not_exists(self):
+    def create_directory_if_not_exists():
         """
         Create the directory for saved games if it does not exist.
         """

@@ -1,8 +1,5 @@
 """Takes care of the game board and its state."""
 
-"""
-    Import Counter for calculating the current players.
-"""
 from collections import Counter
 
 
@@ -17,6 +14,7 @@ class GameBoard:
         Initialize the game board with empty spaces.
         """
         self.board = [self.BOARD_EMPTY for _ in range(9)]
+        self.current_turn = None
 
     def set_current_player(self, player):
         """
