@@ -2,10 +2,9 @@
 import unittest
 from unittest.mock import patch
 from view import GameView
-from board import GameBoard
-
 
 class TestOutput(unittest.TestCase):
+    """ Test the output functions of the GameView class """
 
     @patch('builtins.print')
     def test_display_start_screen(self, mock_print):

@@ -1,10 +1,9 @@
 """Unit tests for the game board and player classes."""
 import unittest
+from unittest.mock import patch, MagicMock
 from board import GameBoard
 from player import HumanPlayer
 from player import ComputerPlayer
-from unittest.mock import patch
-from unittest.mock import MagicMock
 
 
 class TestGameBoard(unittest.TestCase):
@@ -34,7 +33,8 @@ class TestGameBoard(unittest.TestCase):
         for i in range(3):
             self.board.board = [GameBoard.BOARD_EMPTY] * 9
             self.board.board[i * 3:(i + 1) * 3] = [GameBoard.BOARD_PLAYER_X,
-                                                   GameBoard.BOARD_PLAYER_X, GameBoard.BOARD_PLAYER_X]
+                                                   GameBoard.BOARD_PLAYER_X,
+                                                   GameBoard.BOARD_PLAYER_X]
         # Additional tests for vertical, diagonal wins and tie should be added
 
     def test_set_current_player_valid(self):
@@ -61,7 +61,7 @@ class TestGameBoard(unittest.TestCase):
             GameBoard.BOARD_PLAYER_O]
         self.assertIsNone(self.board.current_player())
 
-    def test_current_player_X_turn(self):
+    def test_current_player_x_turn(self):
         """Test the current player when it is X's turn."""
         self.board.board = [
             GameBoard.BOARD_PLAYER_X,
@@ -75,7 +75,7 @@ class TestGameBoard(unittest.TestCase):
             GameBoard.BOARD_EMPTY]
         self.assertEqual(self.board.current_player(), GameBoard.BOARD_PLAYER_X)
 
-    def test_current_player_O_turn(self):
+    def test_current_player_o_turn(self):
         """Test the current player when it is O's turn."""
         self.board.board = [
             GameBoard.BOARD_PLAYER_X,
@@ -129,7 +129,7 @@ class TestGameBoard(unittest.TestCase):
                           GameBoard.BOARD_EMPTY,
                           GameBoard.BOARD_EMPTY])
 
-    def test_check_terminal_state_X_wins(self):
+    def test_check_terminal_state_x_wins(self):
         """Test the check terminal state method when X wins."""
         self.board.board = [
             GameBoard.BOARD_PLAYER_X,
@@ -145,7 +145,7 @@ class TestGameBoard(unittest.TestCase):
             self.board.check_terminal_state(),
             GameBoard.BOARD_PLAYER_X)
 
-    def test_check_terminal_state_O_wins(self):
+    def test_check_terminal_state_o_wins(self):
         """Test the check terminal state method when O wins."""
         self.board.board = [
             GameBoard.BOARD_PLAYER_O,

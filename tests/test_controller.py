@@ -9,6 +9,7 @@ from player import HumanPlayer, ComputerPlayer
 
 class TestController(unittest.TestCase):
     """ This class contains tests for the GameManager class. """
+
     def setUp(self):
         """ Set up the GameManager object for unittests """
         self.game_manager = GameManager()
@@ -52,16 +53,6 @@ class TestController(unittest.TestCase):
             self.assertTrue(self.game_manager.load_game_state())
             mock_open.assert_called_once()
             mock_json_load.assert_called_once()
-
-    @patch("os.listdir", return_value=[])
-    @patch("builtins.open", new_callable=mock_open, read_data='')
-    @patch("json.load", return_value={})
-    def test_load_game_state(self, mock_json_load, mock_listdir):
-        """ Test that load_game_state returns False when no saved games are found"""
-        with patch("Output.GameView.input_prompt", return_value="1"):
-            success = self.game_manager.load_game_state()
-        self.assertTrue(success)
-        mock_json_load.assert_called_once()
 
     @patch("os.listdir", return_value=["test_save.json"])
     @patch("builtins.open", new_callable=mock_open,
@@ -195,7 +186,8 @@ class TestController(unittest.TestCase):
     def test_exit_selection(self, mock_input, mock_listdir):
         """ Test that load_game_state handles exit selection"""
         self.game_manager.board = GameManager()
-        with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu') as mock_start_menu:
+        with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu') \
+                as mock_start_menu:
             result = self.game_manager.board.load_game_state()
             mock_start_menu.assert_called_once()
             self.assertFalse(result)
@@ -218,7 +210,7 @@ class TestController(unittest.TestCase):
     @patch('Controller.GameManager.start_menu')
     def test_save_game_with_datetime(
             self, mock_start_menu, mock_open, mock_datetime, mock_input):
-        """ Test that save_game_state saves the game state to a file with a datetime in the filename """
+        """ Test that save_game_state with default filename format"""
         # Define a specific datetime
         specific_datetime = datetime(2023, 5, 17, 3, 14, 1)  # for example
 
