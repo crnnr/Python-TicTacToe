@@ -3,6 +3,7 @@ from unittest.mock import patch
 from Output import GameView
 from Model import GameBoard
 
+
 class TestOutput(unittest.TestCase):
 
     @patch('builtins.print')
@@ -30,6 +31,7 @@ class TestOutput(unittest.TestCase):
         response = GameView.input_prompt("Enter: ")
         mock_input.assert_called_once_with("Enter: ")
         self.assertEqual(response, 'test')
+
 
 if __name__ == '__main__':
     unittest.main()
