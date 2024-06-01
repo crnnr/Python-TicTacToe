@@ -3,6 +3,7 @@ from board import GameBoard
 
 
 class Player:
+    """ Provides base functions for AI and Humanplayer clases."""
     def __init__(self, player_type):
         """
         Check if the game is in a terminal state.
@@ -22,10 +23,11 @@ class Player:
         Args:
             board: The current state of the game board.
         """
-        pass
 
 
 class HumanPlayer(Player):
+    """ Provides base functions for HumanPlayer to interacti with the game. """
+
     def __init__(self, player_type):
         """
         Initialize a human player with a specified type.
@@ -54,6 +56,7 @@ class HumanPlayer(Player):
 
 
 class ComputerPlayer(Player):
+    """ Provides base functions for ComputerPlayer to act counterpart for single player games """
     def __init__(self, player_type):
         """
         Initialize a computer player with a specified type.
@@ -88,14 +91,14 @@ class ComputerPlayer(Player):
                 board.board[action[1]] = GameBoard.BOARD_EMPTY
                 best_score = max(score, best_score)
             return best_score
-        else:
-            best_score = float('inf')
-            for action in board.available_actions():
-                board.apply_action(action)
-                score = self.minimax(board, depth + 1, True)
-                board.board[action[1]] = GameBoard.BOARD_EMPTY
-                best_score = min(score, best_score)
-            return best_score
+
+        best_score = float('inf')
+        for action in board.available_actions():
+            board.apply_action(action)
+            score = self.minimax(board, depth + 1, True)
+            board.board[action[1]] = GameBoard.BOARD_EMPTY
+            best_score = min(score, best_score)
+        return best_score
 
     def evaluate_terminal_state(self, state, depth):
         """
@@ -110,10 +113,10 @@ class ComputerPlayer(Player):
         """
         if state == self.player_type:
             return 10 - depth
-        elif state == GameBoard.BOARD_EMPTY:  # It's a draw
+        if state == GameBoard.BOARD_EMPTY:  # It's a draw
             return 0
-        else:  # The opponent wins
-            return depth - 10
+        # The opponent wins
+        return depth - 10
 
     def make_move(self, board):
         """

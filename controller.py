@@ -78,9 +78,6 @@ class GameManager:
                 else:
                     # Pass the board argument to the make_move() method
                     action = player.make_move(self.board)
-                if action == 'save':
-                    self.save_game_state()
-                    return
                 self.board.apply_action(action)
                 GameView.clear_screen()
                 GameView.print_board(self.board)
@@ -168,7 +165,7 @@ class GameManager:
             'current_turn': self.board.current_player()
         }
         try:
-            with open(filename, 'w') as file:
+            with open(filename, 'w', encoding='utf-8') as file:
                 json.dump(game_state, file)
             GameView.display_message(f"Game saved as '{filename}'")
         except IOError as e:
@@ -206,7 +203,7 @@ class GameManager:
             GameView.display_message("Invalid selection.")
             return False
 
-        with open(f'{saved_games_dir}/{selected_file}', 'r') as file:
+        with open(f'{saved_games_dir}/{selected_file}', 'r', encoding='utf-8') as file:
             state = json.load(file)
 
         self.board = GameBoard()
