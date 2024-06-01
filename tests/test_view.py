@@ -37,6 +37,20 @@ class TestOutput(unittest.TestCase):
         mock_input.assert_called_once_with("Enter: ")
         self.assertEqual(response, 'test')
 
+    @patch('builtins.input', return_value='1')
+    def test_choose_action(self, mock_input):
+        """ Test the choose_action method """
+        mock_input.side_effect = ['1']
+        response = GameView.choose_action()
+        self.assertEqual(response, '1')
+        mock_input.assert_called()
+
+    @patch('builtins.print')
+    def print_board(self, mock_print):
+        """ Test the print_board method """
+        board = ['X', 'O', 'X', 'O', 'X', 'O', 'X', 'O', 'X']
+        GameView.print_board(board)
+        mock_print.assert_called()
 
 if __name__ == '__main__':
     unittest.main()
