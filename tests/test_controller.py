@@ -4,16 +4,16 @@ import json
 from datetime import datetime
 from unittest.mock import patch, mock_open, MagicMock
 import unittest.mock
-from Controller import GameManager
-from Model import GameBoard
-from Model import Player
-from Model import HumanPlayer
-from Model import ComputerPlayer
+from controller import GameManager
+from board import GameBoard
+from player import Player
+from player import HumanPlayer
+from player import ComputerPlayer
 from datetime import datetime
-from Output import GameView
+from view import GameView
 from unittest.mock import MagicMock
 import re
-from Model import GameBoard, ComputerPlayer  # Assumed class names
+#from Model import GameBoard, ComputerPlayer  # Assumed class names
 
 
 class TestController(unittest.TestCase):
@@ -185,7 +185,7 @@ class TestController(unittest.TestCase):
         # Assert that open is called with a filename in the correct format
         mock_open.assert_called_once()
         filename_used = mock_open.call_args[0][0]
-        self.assertRegex(filename_used, r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.json')
+        self.assertRegex(filename_used, r'\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.json')
         
         # Ensure start_menu is not called to prevent the infinite loop
         mock_start_menu.assert_called_once()

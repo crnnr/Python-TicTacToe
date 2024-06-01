@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
-from Output import GameView
-from Model import GameBoard
+from view import GameView
+from board import GameBoard
 
 class TestOutput(unittest.TestCase):
 

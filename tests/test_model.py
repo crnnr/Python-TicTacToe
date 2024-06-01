@@ -1,8 +1,8 @@
 import unittest
-from Model import GameBoard
-from Model import Player
-from Model import HumanPlayer
-from Model import ComputerPlayer
+from board import GameBoard
+from player import Player
+from player import HumanPlayer
+from player import ComputerPlayer
 from unittest.mock import patch
 from unittest.mock import MagicMock
 
