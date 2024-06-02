@@ -18,15 +18,15 @@ class TestController(unittest.TestCase):
 
     def test_start_menu_start_new_game(self):
         """ Test that start_menu calls start_new_game and game_loop"""
-        with patch('Output.GameView.input_prompt', side_effect=['1']), \
+        with patch('view.GameView.input_prompt', side_effect=['1']), \
                 patch.object(self.game_manager, 'start_new_game') as mock_start_new_game, \
                 patch.object(self.game_manager, 'game_loop') as mock_game_loop:
             self.game_manager.start_menu()
             mock_start_new_game.assert_called_once()
             mock_game_loop.assert_called_once()
 
-    @patch('Output.GameView.display_menu')
-    @patch('Output.GameView.input_prompt', return_value='3')
+    @patch('view.GameView.display_menu')
+    @patch('view.GameView.input_prompt', return_value='3')
     @patch('builtins.exit', side_effect=SystemExit)
     def test_start_menu_exit(self, mock_exit, mock_input, mock_display_menu):
         """ Test that start_menu exits when user selects exit option"""
@@ -81,7 +81,7 @@ class TestController(unittest.TestCase):
             self.assertIsInstance(self.game_manager.players[0], HumanPlayer)
             self.assertIsInstance(self.game_manager.players[1], ComputerPlayer)
 
-    @patch('Output.GameView.input_prompt',
+    @patch('view.GameView.input_prompt',
            side_effect=['secret', KeyboardInterrupt])
     def test_start_menu_secret_binary_rain_exit(self, mock_binary_rain):
         """ Test that start_menu exits when user enters 'secret' """
@@ -89,11 +89,11 @@ class TestController(unittest.TestCase):
             self.game_manager.start_menu()
             mock_binary_rain.assert_called_once()
 
-    @patch('Controller.GameManager.start_menu')
-    @patch('Output.GameView.input_prompt', return_value='1')
-    @patch('Output.GameView.display_message')
-    @patch('Model.GameBoard.print_board')
-    @patch('Model.GameBoard.check_terminal_state',
+    @patch('controller.GameManager.start_menu')
+    @patch('view.GameView.input_prompt', return_value='1')
+    @patch('view.GameView.display_message')
+    @patch('board.GameBoard.print_board')
+    @patch('board.GameBoard.check_terminal_state',
            return_value=GameBoard.BOARD_PLAYER_X)
     def test_post_game_player_x_wins(
             self,
@@ -110,11 +110,11 @@ class TestController(unittest.TestCase):
         mock_input_prompt.assert_called_once_with("Enter your choice: ")
         mock_start_menu.assert_called_once()
 
-    @patch('Controller.GameManager.start_menu')
-    @patch('Output.GameView.input_prompt', return_value='2')
-    @patch('Output.GameView.display_message')
-    @patch('Model.GameBoard.print_board')
-    @patch('Model.GameBoard.check_terminal_state',
+    @patch('controller.GameManager.start_menu')
+    @patch('view.GameView.input_prompt', return_value='2')
+    @patch('view.GameView.display_message')
+    @patch('board.GameBoard.print_board')
+    @patch('board.GameBoard.check_terminal_state',
            return_value=GameBoard.BOARD_PLAYER_O)
     def test_post_game_player_o_wins(
             self,
@@ -131,11 +131,11 @@ class TestController(unittest.TestCase):
         # Verify message displayed for Player O winning and for goodbye
         mock_display_message.assert_any_call("Thank you for playing. Goodbye!")
 
-    @patch('Controller.GameManager.post_game')
-    @patch('Output.GameView.input_prompt', side_effect=['invalid', '1'])
-    @patch('Output.GameView.display_message')
-    @patch('Model.GameBoard.print_board')
-    @patch('Model.GameBoard.check_terminal_state', return_value=None)  # Draw
+    @patch('controller.GameManager.post_game')
+    @patch('view.GameView.input_prompt', side_effect=['invalid', '1'])
+    @patch('view.GameView.display_message')
+    @patch('board.GameBoard.print_board')
+    @patch('board.GameBoard.check_terminal_state', return_value=None)  # Draw
     def test_post_game_draw_invalid_choice(
             self,
             mock_check_terminal_state,
@@ -148,10 +148,10 @@ class TestController(unittest.TestCase):
         # Verify post_game is called again after invalid choice
         mock_post_game.assert_called_once()
 
-    @patch('Controller.GameManager.post_game')
-    @patch('Controller.GameManager.save_game_state')
-    @patch('Model.GameBoard.apply_action')
-    @patch('Model.GameBoard.check_terminal_state',
+    @patch('controller.GameManager.post_game')
+    @patch('controller.GameManager.save_game_state')
+    @patch('board.GameBoard.apply_action')
+    @patch('board.GameBoard.check_terminal_state',
            side_effect=[None, None, None, GameBoard.BOARD_PLAYER_X])
     def test_game_loop_save(self, mock_check_terminal_state,
                             mock_apply_action, mock_save_game, mock_post_game):
@@ -182,7 +182,7 @@ class TestController(unittest.TestCase):
             self.assertFalse(result)
 
     @patch('os.listdir', return_value=['game1.save', 'game2.save'])
-    @patch('Controller.GameView.input_prompt', return_value='exit')
+    @patch('controller.GameView.input_prompt', return_value='exit')
     def test_exit_selection(self, mock_input, mock_listdir):
         """ Test that load_game_state handles exit selection"""
         self.game_manager.board = GameManager()
@@ -193,7 +193,7 @@ class TestController(unittest.TestCase):
             self.assertFalse(result)
 
     @patch('os.listdir', return_value=['game1.json', 'game2.json'])
-    @patch('Controller.GameView.input_prompt', return_value='1')
+    @patch('controller.GameView.input_prompt', return_value='1')
     def test_valid_selection(self, mock_input, mock_listdir):
         """ Test that load_game_state handles valid selection"""
         self.game_manager.board = GameManager()
@@ -207,7 +207,7 @@ class TestController(unittest.TestCase):
     @patch('builtins.input', side_effect=lambda _: '')
     @patch('datetime.datetime', autospec=True)
     @patch('builtins.open', new_callable=mock_open)
-    @patch('Controller.GameManager.start_menu')
+    @patch('controller.GameManager.start_menu')
     def test_save_game_with_datetime(
             self, mock_start_menu, mock_open, mock_datetime, mock_input):
         """ Test that save_game_state with default filename format"""
@@ -226,7 +226,7 @@ class TestController(unittest.TestCase):
         filename_used = mock_open.call_args[0][0]
         self.assertRegex(
             filename_used,
-            r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.json')
+            r'\d{4}-\d{2}-\d{2} \d{2}-\d{2}-\d{2}\.json')
 
         # Ensure start_menu is not called to prevent the infinite loop
         mock_start_menu.assert_called_once()
@@ -237,7 +237,7 @@ class TestController(unittest.TestCase):
         self.game_manager.players[0].choose_action.side_effect = [
             (GameBoard.BOARD_PLAYER_X, 1), (GameBoard.BOARD_PLAYER_X, 2)]
 
-        with patch('Controller.GameView.clear_screen') as mock_clear_screen:
+        with patch('view.GameView.clear_screen') as mock_clear_screen:
             self.game_manager.players[0].choose_action.side_effect = [
                 (GameBoard.BOARD_PLAYER_X, 1), (GameBoard.BOARD_PLAYER_X, 2)]
             self.game_manager.game_loop()
