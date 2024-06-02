@@ -15,16 +15,17 @@ class TestGameBoard(unittest.TestCase):
                          "Current player should be set to X")
         with self.assertRaises(ValueError):
             board.set_current_player('Z')
-
-    def test_make_move(self):
-        board = GameBoard()
-        board.set_current_player(GameBoard.BOARD_PLAYER_X)
-        move_success = board.make_move(0)
-        self.assertTrue(move_success, "Move should be successful")
-        self.assertEqual(board.board[0], GameBoard.BOARD_PLAYER_X,
-                         "Board slot 0 should be marked with X")
-        move_success = board.make_move(0)
-        self.assertFalse(move_success, "Move should fail if slot is already taken")
+    
+    #make_move() is part of the Player class, why here?
+    # def test_make_move(self):
+    #     board = GameBoard()
+    #     board.set_current_player(GameBoard.BOARD_PLAYER_X)
+    #     move_success = board.make_move(0)
+    #     self.assertTrue(move_success, "Move should be successful")
+    #     self.assertEqual(board.board[0], GameBoard.BOARD_PLAYER_X,
+    #                      "Board slot 0 should be marked with X")
+    #     move_success = board.make_move(0)
+    #     self.assertFalse(move_success, "Move should fail if slot is already taken")
 
 if __name__ == '__main__':
     unittest.main()

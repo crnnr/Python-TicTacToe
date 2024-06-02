@@ -28,7 +28,7 @@ class TestController(unittest.TestCase):
     @patch('view.GameView.display_menu')
     @patch('view.GameView.input_prompt', return_value='3')
     @patch('builtins.exit', side_effect=SystemExit)
-    def test_start_menu_exit(self, mock_exit, mock_input, mock_display_menu):
+    def test_start_menu_exit(self, mock_exit):
         """ Test that start_menu exits when user selects exit option"""
         with self.assertRaises(SystemExit):
             self.game_manager.start_menu()
@@ -36,7 +36,7 @@ class TestController(unittest.TestCase):
 
     @patch('os.makedirs')
     @patch('os.path.exists', return_value=False)
-    def test_create_directory_if_not_exists(self, mock_exists, mock_makedirs):
+    def test_create_directory_if_not_exists(self, mock_makedirs):
         """ Test that create_directory_if_not_exists creates the directory """
         GameManager.create_directory_if_not_exists()
         mock_makedirs.assert_called_once_with('savedGames/', exist_ok=True)
@@ -46,8 +46,7 @@ class TestController(unittest.TestCase):
     @patch('os.listdir', return_value=['save1.json'])
     @patch('json.load', return_value={"board": "board_state",
            "num_players": 1, "current_turn": "X"})
-    def test_load_game_state_success(
-            self, mock_json_load, mock_listdir, mock_open):
+    def test_load_game_state_success(self, mock_json_load, mock_open):
         """ Test that load_game_state loads the game state from a file"""
         with patch('Output.GameView.input_prompt', return_value='1'):
             self.assertTrue(self.game_manager.load_game_state())
@@ -59,7 +58,7 @@ class TestController(unittest.TestCase):
            read_data='{"board": "state", "num_players": 2, "current_turn": "X"}')
     @patch("json.load", return_value={"board": "state",
            "num_players": 2, "current_turn": "X"})
-    def test_load_game_state(self, mock_json_load, mock_file, mock_listdir):
+    def test_load_game_state(self, mock_json_load, mock_file):
         """ Test that load_game_state returns False when no saved games are found """
         with patch("Output.GameView.input_prompt", return_value="1"):
             success = self.game_manager.load_game_state()
@@ -120,9 +119,7 @@ class TestController(unittest.TestCase):
             self,
             mock_check_terminal_state,
             mock_print_board,
-            mock_display_message,
-            mock_input_prompt,
-            mock_start_menu):
+            mock_display_message):
         """ Test that post_game displays the correct message when Player O wins """
         with self.assertRaises(SystemExit):
             self.game_manager.post_game()
@@ -136,13 +133,7 @@ class TestController(unittest.TestCase):
     @patch('view.GameView.display_message')
     @patch('board.GameBoard.print_board')
     @patch('board.GameBoard.check_terminal_state', return_value=None)  # Draw
-    def test_post_game_draw_invalid_choice(
-            self,
-            mock_check_terminal_state,
-            mock_print_board,
-            mock_display_message,
-            mock_input_prompt,
-            mock_post_game):
+    def test_post_game_draw_invalid_choice(self, mock_post_game):
         """ Test that post_game displays the correct message when the game is a draw """
         self.game_manager.post_game()
         # Verify post_game is called again after invalid choice
@@ -153,7 +144,7 @@ class TestController(unittest.TestCase):
     @patch('board.GameBoard.apply_action')
     @patch('board.GameBoard.check_terminal_state',
            side_effect=[None, None, None, GameBoard.BOARD_PLAYER_X])
-    def test_game_loop_save(self, mock_check_terminal_state,
+    def test_game_loop_save(self,
                             mock_apply_action, mock_save_game, mock_post_game):
         """ Test that game_loop saves the game when the player chooses to save """
         # Simulate player action that leads to saving the game
@@ -164,7 +155,7 @@ class TestController(unittest.TestCase):
         mock_post_game.assert_not_called()
 
     @patch('os.listdir', side_effect=FileNotFoundError)
-    def test_directory_not_found(self, mock_listdir):
+    def test_directory_not_found(self):
         """ Test that load_game_state handles a FileNotFoundError"""
         self.game_manager.board = GameManager()
         with patch('builtins.print') as mock_print:
@@ -173,7 +164,7 @@ class TestController(unittest.TestCase):
             self.assertFalse(result)
 
     @patch('os.listdir', return_value=[])
-    def test_no_saved_games(self, mock_listdir):
+    def test_no_saved_games(self):
         """ Test that load_game_state handles no saved games found"""
         self.game_manager.board = GameManager()
         with patch('builtins.print') as mock_print:
@@ -183,7 +174,7 @@ class TestController(unittest.TestCase):
 
     @patch('os.listdir', return_value=['game1.save', 'game2.save'])
     @patch('controller.GameView.input_prompt', return_value='exit')
-    def test_exit_selection(self, mock_input, mock_listdir):
+    def test_exit_selection(self):
         """ Test that load_game_state handles exit selection"""
         self.game_manager.board = GameManager()
         with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu') \
@@ -194,7 +185,7 @@ class TestController(unittest.TestCase):
 
     @patch('os.listdir', return_value=['game1.json', 'game2.json'])
     @patch('controller.GameView.input_prompt', return_value='1')
-    def test_valid_selection(self, mock_input, mock_listdir):
+    def test_valid_selection(self):
         """ Test that load_game_state handles valid selection"""
         self.game_manager.board = GameManager()
         # Assuming load_game_state does something with the file that we can check.
