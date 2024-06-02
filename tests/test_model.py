@@ -192,7 +192,7 @@ class TestGameBoard(unittest.TestCase):
     @patch('builtins.input', side_effect=['save'])
     def test_save_option(self, mocked_input):
         """Test the save option."""
-        action = self.player.choose_action(self.board)
+        action = self.player.make_move(self.board)
         self.assertEqual(action, 'save')
 
     # Invalid row, then valid
@@ -200,7 +200,7 @@ class TestGameBoard(unittest.TestCase):
     def test_invalid_row_input(self, mocked_input):
         """Test invalid row input."""
         with patch('builtins.print') as mocked_print:
-            self.player.choose_action(self.board)
+            self.player.make_move(self.board)
             mocked_print.assert_called_with(
                 "Invalid input. Please enter a number between 1 and 3.")
 
@@ -212,8 +212,8 @@ class TestGameBoard(unittest.TestCase):
         score = self.player.evaluate_terminal_state('X', 0)
         self.assertEqual(score, 10)
 
-    def test_choose_action_selects_optimal_move(self):
-        """Test the choose action method when selecting the optimal move."""
+    def test_make_move_selects_optimal_move(self):
+        """Test the make_move method when selecting the optimal move."""
         self.player = ComputerPlayer("X")
         self.board = GameBoard()
         self.board.board = ['X', 'X', None,
@@ -226,7 +226,7 @@ class TestGameBoard(unittest.TestCase):
         self.player.minimax = MagicMock(
             side_effect=lambda board, depth, is_maximizing: scores[board.board.index(None)])
         expected_action = (0, 2)
-        chosen_action = self.player.choose_action(self.board)
+        chosen_action = self.player.make_move(self.board)
         self.assertEqual(chosen_action, expected_action)
 
     def test_initial_game_state(self):
