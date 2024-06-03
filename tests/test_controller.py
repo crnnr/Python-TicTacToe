@@ -91,7 +91,7 @@ class TestController(unittest.TestCase):
     @patch('controller.GameManager.start_menu')
     @patch('view.GameView.input_prompt', return_value='1')
     @patch('view.GameView.display_message')
-    @patch('board.GameBoard.print_board')
+    @patch('view.GameView.print_board')
     @patch('board.GameBoard.check_terminal_state',
            return_value=GameBoard.BOARD_PLAYER_X)
     def test_post_game_player_x_wins(
@@ -112,7 +112,7 @@ class TestController(unittest.TestCase):
     @patch('controller.GameManager.start_menu')
     @patch('view.GameView.input_prompt', return_value='2')
     @patch('view.GameView.display_message')
-    @patch('board.GameBoard.print_board')
+    @patch('view.GameView.print_board')
     @patch('board.GameBoard.check_terminal_state',
            return_value=GameBoard.BOARD_PLAYER_O)
     def test_post_game_player_o_wins(
@@ -131,7 +131,7 @@ class TestController(unittest.TestCase):
     @patch('controller.GameManager.post_game')
     @patch('view.GameView.input_prompt', side_effect=['invalid', '1'])
     @patch('view.GameView.display_message')
-    @patch('board.GameBoard.print_board')
+    @patch('view.GameView.print_board')
     @patch('board.GameBoard.check_terminal_state', return_value=None)  # Draw
     def test_post_game_draw_invalid_choice(self, mock_post_game):
         """ Test that post_game displays the correct message when the game is a draw """
