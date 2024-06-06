@@ -129,6 +129,13 @@ class TestController(unittest.TestCase):
         mock_display_message.assert_any_call("Thank you for playing. Goodbye!")
 
     @patch('controller.GameManager.post_game')
+    def test_post_game_draw(self):
+        """ Test that post_game displays the correct message when the game is a draw """
+        with patch('view.GameView.input_prompt', return_value='3') as mock_input_prompt:
+            self.game_manager.post_game()
+            mock_input_prompt.assert_called_once_with("Enter your choice: ")
+
+    @patch('controller.GameManager.post_game')
     @patch('view.GameView.input_prompt', side_effect=['invalid', '1'])
     @patch('view.GameView.display_message')
     @patch('view.GameView.print_board')
@@ -200,7 +207,7 @@ class TestController(unittest.TestCase):
     @patch('builtins.open', new_callable=mock_open)
     @patch('controller.GameManager.start_menu')
     def test_save_game_with_datetime(
-            self, mock_start_menu, mock_open, mock_datetime, mock_input):
+            self, mock_start_menu, mock_open, mock_datetime):
         """ Test that save_game_state with default filename format"""
         # Define a specific datetime
         specific_datetime = datetime(2023, 5, 17, 3, 14, 1)  # for example
