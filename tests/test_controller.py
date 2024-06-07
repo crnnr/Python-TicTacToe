@@ -197,7 +197,7 @@ class TestController(unittest.TestCase):
     @patch('board.GameBoard.apply_action')
     @patch('board.GameBoard.check_terminal_state',
            side_effect=[None, None, None, GameBoard.BOARD_PLAYER_X])
-    @patch('view.GameView.choose_action', return_value=(GameBoard.BOARD_PLAYER_X, 'save'))
+    @patch('view.GameView.choose_move', return_value=(GameBoard.BOARD_PLAYER_X, 'save'))
     def test_game_loop_save_game(self, mock_choose_action, mock_check_terminal_state):
         """ Test that game_loop saves the game state when the player chooses to save """
         self.game_manager.game_loop()
