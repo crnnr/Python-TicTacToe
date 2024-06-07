@@ -16,6 +16,15 @@ class TestGameBoard(unittest.TestCase):
         with self.assertRaises(ValueError):
             board.set_current_player('Z')
     
+    def test_current_player(self):
+        board = GameBoard()
+        board.board = [GameBoard.BOARD_PLAYER_X, GameBoard.BOARD_PLAYER_O,
+                       GameBoard.BOARD_EMPTY, GameBoard.BOARD_PLAYER_X,
+                       GameBoard.BOARD_PLAYER_O, GameBoard.BOARD_EMPTY,
+                       GameBoard.BOARD_PLAYER_X, GameBoard.BOARD_PLAYER_O,
+                       GameBoard.BOARD_PLAYER_X]
+        self.assertEqual(board.current_player(), GameBoard.BOARD_PLAYER_O,
+                         "Current player should be O")
     #make_move() is part of the Player class, why here?
     # def test_make_move(self):
     #     board = GameBoard()
