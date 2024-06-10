@@ -159,7 +159,7 @@ class TestController(unittest.TestCase):
     @patch('view.GameView.print_board')
     @patch('board.GameBoard.check_terminal_state',
            return_value=GameBoard.BOARD_PLAYER_O)
-    def test_post_game_player_o_wins(
+    def test_post_game_exit(
             self,
             mock_check_terminal_state,
             mock_print_board,
@@ -169,7 +169,7 @@ class TestController(unittest.TestCase):
             self.game_manager.post_game()
         mock_check_terminal_state.assert_called_once()
         mock_print_board.assert_called_once()
-        # Verify message displayed for Player O winning and for goodbye
+        # Verify message displayed for Exiting the game
         mock_display_message.assert_any_call("Thank you for playing. Goodbye!")
 
     @patch('controller.GameManager.post_game')
@@ -179,16 +179,13 @@ class TestController(unittest.TestCase):
             self.game_manager.post_game()
             mock_input_prompt.assert_called_once_with("Enter your choice: ")
 
-    @patch('controller.GameManager.post_game')
-    @patch('view.GameView.input_prompt', side_effect=['invalid', '1'])
-    @patch('view.GameView.display_message')
-    @patch('view.GameView.print_board')
-    @patch('board.GameBoard.check_terminal_state', return_value=None)  # Draw
-    def test_post_game_draw_invalid_choice(self, mock_post_game):
-        """ Test that post_game displays the correct message when the game is a draw """
-        self.game_manager.post_game()
-        # Verify post_game is called again after invalid choice
-        mock_post_game.assert_called_once()
+
+    def test_post_game_draw_invalid_choice(self):
+        """ Test that post_game displays the correct message when invalid choice is entered"""
+        with patch('view.GameView.display_message') as mock_display_message:
+            self.game_manager.post_game()
+            mock_display_message.assert_called_with('Invalid choice. Please enter 1, 2, or 3.')
+
 
     @patch('controller.GameManager.post_game')
     @patch('controller.GameManager.save_game_state')
