@@ -163,12 +163,14 @@ class TestController(unittest.TestCase):
             self,
             mock_check_terminal_state,
             mock_print_board,
-            mock_display_message):
+            mock_display_message,
+            mock_input_prompt):
         """ Test that post_game displays the correct message when Player O wins """
         with self.assertRaises(SystemExit):
             self.game_manager.post_game()
         mock_check_terminal_state.assert_called_once()
         mock_print_board.assert_called_once()
+        mock_input_prompt.assert_called_once_with("Enter your choice: ")
         # Verify message displayed for Exiting the game
         mock_display_message.assert_any_call("Thank you for playing. Goodbye!")
 
@@ -289,9 +291,6 @@ class TestController(unittest.TestCase):
             self.game_manager.board.load_game_state()
             mock_display_message.assert_called()
     
-
-
-    
     @patch('os.listdir', return_value=['game1.json', 'game2.json'])
     @patch('controller.GameView.input_prompt', return_value='exit')
     def test_exit_selection_save_game(self, mock_input_prompt, mock_listdir):
@@ -308,7 +307,13 @@ class TestController(unittest.TestCase):
     @patch('controller.GameBoard')
     @patch('controller.HumanPlayer')
     @patch('controller.ComputerPlayer')
-    def test_load_game_state(self, mock_computer_player, mock_human_player, mock_game_board, mock_game_view, mock_json_load, mock_os_listdir):
+    def test_load_game_state(self, 
+                            mock_computer_player,
+                            mock_human_player,
+                            mock_game_board, 
+                            mock_game_view, 
+                            mock_json_load, 
+                            mock_os_listdir):
         # Mock the behavior of os.listdir
         mock_os_listdir.return_value = ['game1', 'game2']
         # Mock the behavior of json.load
