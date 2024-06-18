@@ -1,3 +1,4 @@
+""" Test the output functions of the GameView class """
 import unittest
 from unittest.mock import patch, Mock
 from view import GameView
@@ -46,9 +47,11 @@ class TestOutput(unittest.TestCase):
         mock_board.BOARD_EMPTY = ' '
 
         # Define the board layout
-        board_layout = [mock_board.BOARD_PLAYER_X, mock_board.BOARD_PLAYER_O, mock_board.BOARD_PLAYER_X, 
-                        mock_board.BOARD_PLAYER_O, mock_board.BOARD_PLAYER_X, mock_board.BOARD_PLAYER_O, 
-                        mock_board.BOARD_PLAYER_X, mock_board.BOARD_PLAYER_O, mock_board.BOARD_PLAYER_X]
+        board_layout = [
+            mock_board.BOARD_PLAYER_X, mock_board.BOARD_PLAYER_O, mock_board.BOARD_PLAYER_X,
+            mock_board.BOARD_PLAYER_O, mock_board.BOARD_PLAYER_X, mock_board.BOARD_PLAYER_O,
+            mock_board.BOARD_PLAYER_X, mock_board.BOARD_PLAYER_O, mock_board.BOARD_PLAYER_X
+        ]
 
         # Call the print_board method with the board layout
         GameView.print_board(board_layout)
