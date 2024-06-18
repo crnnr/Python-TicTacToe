@@ -31,7 +31,7 @@ class TestController(unittest.TestCase):
                 patch('view.GameView.display_message') as mock_display_message:
             self.game_manager.start_menu()
             mock_display_message.assert_called_once_with("Invalid choice. Please enter 1 or 2.")
-    
+
     def test_start_menu_load_game(self):
         """ Test that start_menu calls load_game_state and game_loop"""
         with patch('view.GameView.input_prompt', side_effect=['2']), \
@@ -282,7 +282,7 @@ class TestController(unittest.TestCase):
             result = self.game_manager.board.load_game_state()
             self.assertNotEqual(result, False)
 
-    @patch('os.listdir', return_value=['game1.json', 'game2.json'])    
+    @patch('os.listdir', return_value=['game1.json', 'game2.json'])
     @patch('controller.GameView.display_message')
     def test_list_saved_games(self, mock_display_message):
         """ Test that load_game_state lists saved games"""
@@ -290,7 +290,7 @@ class TestController(unittest.TestCase):
         with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu'):
             self.game_manager.board.load_game_state()
             mock_display_message.assert_called()
-    
+
     @patch('os.listdir', return_value=['game1.json', 'game2.json'])
     @patch('controller.GameView.input_prompt', return_value='exit')
     def test_exit_selection_save_game(self, mock_input_prompt, mock_listdir):
@@ -298,8 +298,7 @@ class TestController(unittest.TestCase):
         self.game_manager.board = GameManager()
         with patch('builtins.print'), patch.object(self.game_manager.board, 'start_menu'):
             result = self.game_manager.board.load_game_state()
-            self.assertFalse(result) 
-
+            self.assertFalse(result)
 
     @patch('os.listdir')
     @patch('json.load')
@@ -307,13 +306,14 @@ class TestController(unittest.TestCase):
     @patch('controller.GameBoard')
     @patch('controller.HumanPlayer')
     @patch('controller.ComputerPlayer')
-    def test_load_game_state(self, 
+    def test_load_game_state(self,
                             mock_computer_player,
                             mock_human_player,
-                            mock_game_board, 
-                            mock_game_view, 
-                            mock_json_load, 
+                            mock_game_board,
+                            mock_game_view,
+                            mock_json_load,
                             mock_os_listdir):
+        """ Test that load_game_state loads the game state from a file """
         # Mock the behavior of os.listdir
         mock_os_listdir.return_value = ['game1', 'game2']
         # Mock the behavior of json.load
@@ -339,6 +339,7 @@ class TestController(unittest.TestCase):
     @patch('os.listdir')
     @patch('controller.GameView')
     def test_load_game_state_no_saved_games(self, mock_game_view, mock_os_listdir):
+        """ Test that load_game_state returns False when no saved games are availabl """
         # Mock the behavior of os.listdir
         mock_os_listdir.return_value = []
         self.game_manager.board = GameManager()
@@ -351,6 +352,7 @@ class TestController(unittest.TestCase):
     @patch('os.listdir', side_effect=FileNotFoundError)
     @patch('controller.GameView')
     def test_load_game_state_no_saved_games_directory(self, mock_game_view, mock_os_listdir):
+        """ Test that load_game_state returns False when no saved games directory is found """
         self.game_manager.board = GameManager()
         result = self.game_manager.board.load_game_state()
         self.assertFalse(result)
@@ -361,7 +363,9 @@ class TestController(unittest.TestCase):
     @patch('os.listdir', return_value=['game1.json', 'game2.json'])
     @patch('view.GameView.input_prompt', return_value='3')
     @patch('view.GameView.display_message')
-    def test_invalid_selection_save_game(self, mock_input_prompt, mock_listdir, mock_display_message):
+    def test_invalid_selection_save_game(self, mock_input_prompt,
+                                         mock_listdir,
+                                         mock_display_message):
         """ Test that load_game_state handles invalid selection"""
         self.game_manager.board = GameManager()
         result = self.game_manager.board.load_game_state()
@@ -370,9 +374,6 @@ class TestController(unittest.TestCase):
         mock_input_prompt.assert_called_once()
         mock_listdir.assert_called_once()
         mock_display_message.assert_called_with("Invalid selection.")
-
-
-
 
 if __name__ == '__main__':
     unittest.main()
