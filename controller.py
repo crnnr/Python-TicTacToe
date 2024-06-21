@@ -43,6 +43,7 @@ class GameManager:
             if choice == '2':
                 if self.load_game_state():
                     self.game_loop()
+                    break
                 else:
                     GameView.display_message("Loading game failed.")
                     self.load_game_state()
@@ -148,7 +149,7 @@ class GameManager:
         """
         Save the current game state to a file.
         """
-        save_name = input("Enter a name for your save"
+        save_name = GameView.input_prompt("Enter a name for your save"
                           "(leave blank to use the current datetime): ")
         if not save_name:
             # Ensure filename valid filename, regardless of OS
