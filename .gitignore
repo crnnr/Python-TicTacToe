@@ -23,3 +23,7 @@ env/
 
 # Misc
 .DS_Store
+
+# Windows-Mist
+.vs
+.vs/
