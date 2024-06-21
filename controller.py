@@ -116,7 +116,7 @@ class GameManager:
         initializies the game board and players.
         """
         self.board = GameBoard()
-        num_players = input('Enter number of players [1-2]: ')
+        num_players = GameView.input_prompt('Enter number of players [1-2]: ')
         self.num_players = int(num_players)
 
         if self.num_players not in [1, 2]:
