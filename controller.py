@@ -109,6 +109,9 @@ class GameManager:
         elif choice == '2':
             GameView.display_message("Thank you for playing. Goodbye!")
             sys.exit(0)
+        else: # Invalid choice
+            GameView.display_message("Invalid choice. Returning to main menu.")
+            self.start_menu()
 
     def start_new_game(self):
         """
@@ -144,6 +147,9 @@ class GameManager:
                     start_row = random.randint(0, rows - 1)
                     for row in range(start_row, rows):
                         frame[row][col] = str(random.randint(0, 1))
+            # Print the frame
+            GameView.display_message(frame)
+        
 
     def save_game_state(self):
         """
