@@ -43,7 +43,6 @@ class GameManager:
             if choice == '2':
                 if self.load_game_state():
                     self.game_loop()
-                    break
                 else:
                     GameView.display_message("Loading game failed.")
                     self.load_game_state()
@@ -149,7 +148,6 @@ class GameManager:
                         frame[row][col] = str(random.randint(0, 1))
             # Print the frame
             GameView.display_message(frame)
-        
 
     def save_game_state(self):
         """
