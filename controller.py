@@ -46,6 +46,7 @@ class GameManager:
                 else:
                     GameView.display_message("Loading game failed.")
                     self.load_game_state()
+                break
             elif choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
                 sys.exit(0)
@@ -108,6 +109,9 @@ class GameManager:
         elif choice == '2':
             GameView.display_message("Thank you for playing. Goodbye!")
             sys.exit(0)
+        else: # Invalid choice
+            GameView.display_message("Invalid choice. Returning to main menu.")
+            self.start_menu()
 
     def start_new_game(self):
         """
@@ -116,7 +120,7 @@ class GameManager:
         initializies the game board and players.
         """
         self.board = GameBoard()
-        num_players = input('Enter number of players [1-2]: ')
+        num_players = GameView.input_prompt('Enter number of players [1-2]: ')
         self.num_players = int(num_players)
 
         if self.num_players not in [1, 2]:
@@ -143,12 +147,14 @@ class GameManager:
                     start_row = random.randint(0, rows - 1)
                     for row in range(start_row, rows):
                         frame[row][col] = str(random.randint(0, 1))
+            # Print the frame
+            GameView.display_message(frame)
 
     def save_game_state(self):
         """
         Save the current game state to a file.
         """
-        save_name = input("Enter a name for your save"
+        save_name = GameView.input_prompt("Enter a name for your save"
                           "(leave blank to use the current datetime): ")
         if not save_name:
             # Ensure filename valid filename, regardless of OS
