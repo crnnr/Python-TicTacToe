@@ -46,6 +46,7 @@ class GameManager:
                 else:
                     GameView.display_message("Loading game failed.")
                     self.load_game_state()
+                break
             elif choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
                 sys.exit(0)

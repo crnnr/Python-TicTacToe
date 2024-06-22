@@ -384,10 +384,9 @@ class TestController(unittest.TestCase):
         with patch('view.GameView.input_prompt', return_value="invalid_file"), \
                 patch('os.listdir', return_value=None):
                 result = self.game_manager.load_game_state()
-
         mock_display_message.assert_called_with("No saved games found.")
         self.assertFalse(result)
-                
+    
     @patch('os.listdir', side_effect=FileNotFoundError)
     @patch('controller.GameView')
     def test_load_game_state_no_saved_games_directory(self, mock_game_view, mock_os_listdir):
@@ -407,7 +406,6 @@ class TestController(unittest.TestCase):
         """ Test that load_game_state handles invalid selection"""
         result = self.game_manager.load_game_state()
         self.assertFalse(result)
-        
 
         # display_message is used more than one time
         calls =  [unittest.mock.call("Please select a game to load"),
