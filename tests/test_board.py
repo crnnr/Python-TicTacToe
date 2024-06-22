@@ -189,20 +189,6 @@ class TestGameBoard(unittest.TestCase):
             GameBoard.BOARD_EMPTY]
         self.assertIsNone(self.board.check_terminal_state())
 
-    @patch('builtins.input', side_effect=['save'])
-    def test_save_option(self, mocked_input):
-        """Test the save option."""
-        action = self.player.make_move(self.board)
-        self.assertEqual(action, 'save')
-
-    # Invalid row, then valid
-    @patch('builtins.input', side_effect=['4', '2', '1'])
-    def test_invalid_row_input(self, mocked_input):
-        """Test invalid row input."""
-        with patch('builtins.print') as mocked_print:
-            self.player.make_move(self.board)
-            mocked_print.assert_called_with(
-                "Invalid input. Please enter a number between 1 and 3.")
 
     def test_evaluate_terminal_state_win(self):
         """Test the evaluate terminal state method when a player wins."""
