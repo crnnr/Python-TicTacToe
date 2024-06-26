@@ -394,10 +394,10 @@ class TestSerialization(unittest.TestCase):
         """ Test that load_game_state handles a FileNotFoundError"""
         with patch('view.GameView.input_prompt', return_value="invalid_file"), \
                 patch('os.listdir', return_value=None):
-                result = self.game_manager.load_game_state()
+            result = self.game_manager.load_game_state()
         mock_display_message.assert_called_with("No saved games found.")
         self.assertFalse(result)
-    
+
     @patch('os.listdir', side_effect=FileNotFoundError)
     @patch('controller.GameView')
     def test_load_game_state_no_saved_games_directory(self, mock_game_view, mock_os_listdir):
@@ -427,6 +427,6 @@ class TestSerialization(unittest.TestCase):
         mock_input_prompt.assert_called()
         mock_listdir.assert_called_once()
         self.assertTrue(mock_display_message.call_args_list == calls)
-        
+
 if __name__ == '__main__':
     unittest.main()

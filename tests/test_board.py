@@ -1,6 +1,6 @@
 """Unit tests for the game board and player classes."""
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 from board import GameBoard
 from player import HumanPlayer
 from player import ComputerPlayer
