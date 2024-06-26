@@ -186,10 +186,10 @@ class TestController(unittest.TestCase):
         """ Test that post_game displays the correct message when the game is a draw """
         with patch('view.GameView.input_prompt', return_value='1') as mock_input_prompt:
             self.game_manager.post_game()
-            calls =  [unittest.mock.call("It's a draw."),
+            calls =  [unittest.mock.call("It's a draw!"),
                  unittest.mock.call("\n1. Return to Main Menu\n2. Exit")]
 
-            mock_display_message.call_args_list == calls
+            self.assertTrue(mock_display_message.call_args_list == calls)
             mock_input_prompt.assert_called_once_with("Enter your choice: ")
             mock_start_menu.assert_called_once()
 
@@ -201,10 +201,10 @@ class TestController(unittest.TestCase):
             self.game_manager.post_game()
             mock_input_prompt.assert_called_once_with("Enter your choice: ")
 
-            calls = [unittest.mock.call("It's a draw."),
+            calls = [unittest.mock.call("It's a draw!"),
                         unittest.mock.call("\n1. Return to Main Menu\n2. Exit"),
                         unittest.mock.call("Invalid choice. Returning to main menu.")]
-            mock_display_message.call_args_list == calls
+            self.assertTrue(mock_display_message.call_args_list == calls)
             mock_start_menu.assert_called_once()
 
 
@@ -245,6 +245,17 @@ class TestController(unittest.TestCase):
         # Ensure post_game was called due to terminal state or full board
         mock_post_game.assert_called_once()
 
+
+
+
+class TestSerialization(unittest.TestCase):
+    """ This class contains tests for the serialization module. """
+
+    def setUp(self):
+        """ Set up the GameManager object for unittests """
+        self.game_manager = GameManager()
+        self.game_manager.players = [MagicMock(), MagicMock()]
+        self.game_manager.board = GameBoard()
 
     @patch('controller.GameManager.start_menu')
     @patch('builtins.open', new_callable=unittest.mock.mock_open)
@@ -400,22 +411,22 @@ class TestController(unittest.TestCase):
     @patch('os.listdir', return_value=['game1.json', 'game2.json'])
     @patch('view.GameView.input_prompt', return_value='3')
     @patch('view.GameView.display_message')
-    def test_invalid_selection_save_game(self, mock_input_prompt,
-                                         mock_listdir,
-                                         mock_display_message):
+    def test_invalid_selection_save_game(self, mock_display_message,
+                                         mock_input_prompt,
+                                         mock_listdir,):
         """ Test that load_game_state handles invalid selection"""
         result = self.game_manager.load_game_state()
         self.assertFalse(result)
 
         # display_message is used more than one time
-        calls =  [unittest.mock.call("Please select a game to load"),
+        calls =  [unittest.mock.call("Please select a game to load:"),
                  unittest.mock.call("1. game1.json"),
                  unittest.mock.call("2. game2.json"),
                  unittest.mock.call("Invalid selection.")]
 
         mock_input_prompt.assert_called()
         mock_listdir.assert_called_once()
-        mock_display_message.call_args_list == calls
+        self.assertTrue(mock_display_message.call_args_list == calls)
         
 if __name__ == '__main__':
     unittest.main()

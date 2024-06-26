@@ -47,10 +47,10 @@ class GameManager:
                     GameView.display_message("Loading game failed.")
                     self.load_game_state()
                 break
-            elif choice == '3':
+            if choice == '3':
                 GameView.display_message("Thank you for playing. Goodbye!")
                 sys.exit(0)
-            elif choice.lower() == 'secret':
+            if choice.lower() == 'secret':
                 try:
                     self.binary_rain()
                 except KeyboardInterrupt:
